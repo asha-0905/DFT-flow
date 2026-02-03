@@ -5,7 +5,7 @@ This repository documents the complete DFT flow including scan insertion, scan c
 
 # DFT FLOW
 
-This repository documents the complete Design-for-Testability (DFT) scan insertion flow used in industrial ASIC/SoC designs. The content is written for beginners while maintaining professional accuracy, and it follows Mentor Graphics (Siemens Tessent) tool methodology.
+This repository documents the complete Design-for-Testability (DFT).
 
 ---
 
