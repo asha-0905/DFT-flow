@@ -13,16 +13,10 @@ This repository documents the complete Design-for-Testability (DFT) scan inserti
 
 1. Pre-DFT Setup
 2. Scan Insertion Overview
-3. EDT/OCC Insertion
+3. Scan compression - EDT/OCC Insertion
 4. ATPG
-5. Scan Insertion Phases
-6. Scan Structure Insertion
-7. Test Mode and Scan Enable
-8. Scan DRC (Design Rule Checks)
-9. Violation Types and Fixes
-10. Scan Chain Optimization
-11. Scan Chain Reordering
-12. Outputs of Scan Insertion
+5. Simulation
+6. JTAG, Boundary scan, MBIST 
 
 ---
 
