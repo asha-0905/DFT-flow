@@ -338,6 +338,165 @@ insert_test_logic -number <num_chains> -edge merge -clock merge
    * Lists all violations and fixes
 
 ---
+🔷 3. Scan Compression (EDT + OCC)
+🎯 Objective
 
+Scan compression reduces test data volume and tester pin requirements while enabling efficient at-speed testing. This is achieved using EDT (Embedded Deterministic Test) for compression/decompression and OCC (On-Chip Clock Controller) for clock control during scan shift and capture operations.
+
+🔹 3.1 Embedded Deterministic Test (EDT)
+
+EDT inserts compression hardware that allows a small number of external scan channels to drive a large number of internal scan chains, significantly reducing tester memory and test time.
+
+🔸 3.1.1 Decompressor Architecture
+
+The decompressor expands compressed test data from external channels into multiple internal scan chains using:
+
+✅ Linear Feedback Shift Register (LFSR)
+
+Given an initial seed, the LFSR generates deterministic pseudo-random patterns.
+
+However, LFSR-generated patterns exhibit a diagonal correlation, meaning adjacent scan chains may receive related values, limiting randomness.
+
+✅ Phase Shifter
+
+The output of the LFSR is passed through a phase shifter to decorrelate adjacent bits.
+
+This improves randomness across internal scan chains and increases ATPG efficiency.
+
+✅ External Channel Injection
+
+Even with LFSR and phase shifter logic, some pattern combinations may remain unreachable.
+
+Therefore, ATPG injects values directly from external scan channels to improve controllability and fault coverage.
+
+🔸 3.1.2 Compressor and Mask Logic
+
+After test execution, internal scan chain responses must be compacted before being observed externally.
+
+✅ Compressor
+
+Implemented using multi-level XOR trees.
+
+Compresses responses from all internal scan chains into fewer outputs.
+
+However, if any scan chain contains an unknown (X), the XOR output becomes X and propagates outward.
+
+✅ Mask Logic
+
+Masking logic blocks the propagation of X values during response compaction.
+
+Controlled using decoder logic to selectively mask problematic chains.
+
+✅ Decoder Types
+
+XOR Decoder: Lower area, moderate masking efficiency.
+
+One-Hot Decoder: Higher masking precision, slightly larger area.
+
+Without decoders, masking hardware area and routing complexity increase significantly.
+
+🔸 3.1.3 External Channels vs Internal Scan Chains
+Parameter	Meaning
+External Channels	Tester-visible scan inputs
+Internal Scan Chains	On-chip scan chains driven by EDT logic
+✅ Compression Ratio
+Compression Ratio = Number of Internal Scan Chains / Number of External Channels
+
+
+Higher compression ratio → Lower tester bandwidth → Faster production testing.
+
+🔹 3.2 On-Chip Clock Controller (OCC)
+🎯 Objective
+
+OCC controls which clocks are propagated during:
+
+Functional mode
+
+Scan shift mode
+
+Capture mode
+
+It also determines the number of capture pulses during at-speed testing.
+
+🔸 Key Functions of OCC
+
+Generates safe scan shift clocks
+
+Generates functional-speed capture clocks
+
+Enables:
+
+Launch-on-capture testing
+
+Transition delay fault testing
+
+Multi-clock domain testing
+
+OCC ensures clock safety while preserving functional timing behavior during test.
+
+🔹 3.3 EDT + OCC Insertion Flow (Tessent Based)
+🔸 Step 1: Set Context to DFT
+set_context dft
+
+🔸 Step 2: SETUP Phase
+read_verilog 
+read_cell_library 
+
+
+Elaborate the design.
+
+Load the ATPG dofile (internally calls the testproc).
+
+🔸 Step 3: Specify Compression Configuration
+set_edt_options
+
+
+Define number of external channels.
+
+Configure compression architecture.
+
+🔸 Step 4: ANALYSIS Phase
+analyze_drc_violations
+
+
+Check for EDT-related violations:
+
+Violation	Meaning
+K13	Newly inserted pins detected
+E5	X-propagation violation
+
+Fix all violations before proceeding to insertion.
+
+🔸 Step 5: INSERTION Phase
+write_edt_files
+
+
+Inserts EDT and OCC hardware.
+
+Generates output files.
+
+Tool automatically creates a complete execution script (dc_script.scr).
+
+🔹 3.4 Library Concepts
+Library Type	Purpose
+Link Library	Resolves referenced cells in RTL/gate netlists
+Target Library	Used during compile to generate technology-specific optimized netlists
+
+The synthesis tool selects the smallest gates that meet timing and functional constraints.
+
+🔹 3.5 Outputs of EDT + OCC Insertion
+📄 Generated Artifacts
+
+Compressed Scan Netlist
+
+Example: edt_top_gate.v
+
+Contains decompressor, compressor, mask logic, and OCC circuitry.
+
+EDT/OCC Configuration Files
+
+Describe compression architecture
+
+Used during ATPG and pattern generation
 
 
