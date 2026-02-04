@@ -339,6 +339,7 @@ insert_test_logic -number <num_chains> -edge merge -clock merge
 
 ---
 🔷 3. Scan Compression (EDT + OCC)
+
 🎯 Objective
 
 Scan compression reduces the amount of test data that must be supplied by the tester while still maintaining high fault coverage. This is achieved using EDT (Embedded Deterministic Test) for data compression and OCC (On-Chip Clock Controller) for safe clock generation during scan and at-speed testing.
@@ -428,6 +429,7 @@ Lower test time
 Reduced tester memory usage
 
 🔷 3.3 OCC (On-Chip Clock Controller)
+
 🎯 Objective
 
 OCC is responsible for selecting and generating the appropriate clocks during:
