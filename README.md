@@ -833,42 +833,38 @@ simulation_mismatch.v
 
 #### Step 3: Open ATPG Session
 
-In ATPG:
+##### In ATPG:
 
-Open same flop instance
+* Open same flop instance
 
-Load failure pattern
+* Load failure pattern
 
-Menu:
+##### Menu:
 
-Data → Pattern Index → Failing pattern number
+* Data → Pattern Index → Failing pattern number
 
-Step 4: Trace Back D Input
+#### Step 4: Trace Back D Input
 
-In ATPG session:
+##### In ATPG session:
 
-Trace back D input of failing flop
+* Trace back D input of failing flop
 
-In QuestaSim:
+##### In QuestaSim:
 
-Open same instance
+* Open same instance
 
-Compare values
+* Compare values
 
-Repeat tracing process until:
+##### Repeat tracing process until:
 
-Root cause is found
+* Root cause is found
 
-Step 5: Fix Root Cause
+#### Step 5: Fix Root Cause
 
-After identifying:
+* After identifying: Root cause of failure, Fix the issue
 
-Root cause of failure
-
-Fix the issue
-
-Debug Summary
-Step	Action
+#### Debug Summary
+Step 	Action
 1	Identify failing flop, pattern, time
 2	Open waveform and inspect
 3	Load failing pattern in ATPG
@@ -877,455 +873,441 @@ Step	Action
 
 ------------------------------------------------------------------------
 
-📂 04_ATPG/01_fault_models.md
-Fault Models
+# 📂 04_ATPG/01_fault_models.md
+## Fault Models
 
 ATPG generates patterns based on fault models.
 
-1️⃣ Stuck-at Fault Model (SA)
+### 1️⃣ Stuck-at Fault Model (SA)
 
-Detects nodes stuck at 0 or 1
+* Detects nodes stuck at 0 or 1
 
-Most basic and widely used model
+* Most basic and widely used model
 
-Used for coverage analysis and improvement
+* Used for coverage analysis and improvement
 
-2️⃣ Transition Delay Fault Model (TDF)
+### 2️⃣ Transition Delay Fault Model (TDF)
 
-Used to detect whether logic transitions:
-
+* Used to detect whether logic transitions:
+```
 0 → 1
 
 1 → 0
+```
+* occur within the time period of fast frequency clock.
 
-occur within the time period of fast frequency clock.
+#### Why Fast Frequency Clock?
 
-Why Fast Frequency Clock?
+##### After manufacturing:
 
-After manufacturing:
+* Chips operate at fast functional frequency
 
-Chips operate at fast functional frequency
+* Need to verify rise/fall occurs within fast clock period
 
-Need to verify rise/fall occurs within fast clock period
+##### Capture Requirement
 
-Capture Requirement
+* In capture phase: 2 clock pulses required
 
-In capture phase:
+--> Launch
 
-2 clock pulses required
+--> Capture
 
-Launch
+#### Ways to Detect TDF
+* LOC (Launch On Capture)
 
-Capture
+    Launch on capture
 
-Ways to Detect TDF
-LOC (Launch On Capture)
+    Launch off capture
 
-Launch on capture
+* LOS (Launch On Shift)
 
-Launch off capture
+    Launch on shift
 
-LOS (Launch On Shift)
+    Launch off shift
 
-Launch on shift
+##### LOC vs LOS
 
-Launch off shift
+* LOS has slightly more coverage than LOC
 
-LOC vs LOS
+* Tool has more controllability in LOS
 
-LOS has slightly more coverage than LOC
+##### Explanation:
 
-Tool has more controllability in LOS
+* In LOS, tool brings transition value through shift path
 
-Explanation:
+* In LOC, tool must program combinational logic to create transition
 
-In LOS, tool brings transition value through shift path
+* If tool cannot generate proper value at combo output → fault not detected.
 
-In LOC, tool must program combinational logic to create transition
+* LOC requires more patterns than LOS
 
-If tool cannot generate proper value at combo output → fault not detected.
+##### Limitation of LOS:
 
-LOC requires more patterns than LOS
+* Controlling SE (timing closure on SE) is extremely difficult
 
-Limitation of LOS:
+* Therefore: Mostly LOC is used
 
-Controlling SE (timing closure on SE) is extremely difficult
+#### Pipelined Scan Enable
 
-Therefore:
+###### In OCC:
 
-Mostly LOC is used
+* When SEN = 1, Slow frequency clock is propagated for both SA and TDF
 
-Pipelined Scan Enable
+* Using LOS: Fast frequency clock propagated using pipelined scan enable
 
-In OCC:
+#### Why TDF Coverage < SA Coverage
 
-When SEN = 1
+##### Reason 1:
 
-Slow frequency clock is propagated for both SA and TDF
+* If one input of AND gate tied to ground
 
-Using LOS:
+* No transition faults detected
 
-Fast frequency clock propagated using pipelined scan enable
+* In SA, 2 faults detectable
 
-Why TDF Coverage < SA Coverage
+##### Reason 2:
 
-Reason 1:
+* Timing exceptions
 
-If one input of AND gate tied to ground
+* Timing Exceptions - False Path (AU.FP) - Faults untestable due to false path, Declared in SDC file
 
-No transition faults detected
+##### False path example:
 
-In SA, 2 faults detectable
+* Asynchronous clocks CLKA and CLKB, Declared false path
 
-Reason 2:
+* Timing not closed
 
-Timing exceptions
+* For SA: Tool handles this
 
-Timing Exceptions
-False Path (AU.FP)
+#### Multicycle Path (AU.MCP)
 
-Faults untestable due to false path
+* Requires more than one clock cycle
 
-Declared in SDC file
+* Exception to default single-cycle timing
 
-False path example:
+##### Example:
 
-Asynchronous clocks CLKA and CLKB
+* Designer wants setup check at cycle 4 instead of cycle 1
 
-Declared false path
+### 3️⃣ IDDQ
 
-Timing not closed
+* Fault model based on quiescent current
 
-For SA:
+### 4️⃣ PDF
 
-Tool handles this
+* Path Delay Fault model
 
-Multicycle Path (AU.MCP)
+### 5️⃣ Fault Categories
+#### Fault Dominance
 
-Requires more than one clock cycle
+##### Fault F dominates fault G if:
 
-Exception to default single-cycle timing
+* Detecting set of F contains that of G
 
-Example:
+#### Fault Equivalence
 
-Designer wants setup check at cycle 4 instead of cycle 1
+##### Faults F1 and F2 are equivalent if:
 
-3️⃣ IDDQ
+* All tests detecting F1 detect F2. And vice versa
 
-Fault model based on quiescent current
+#### Fault Collapse
 
-4️⃣ PDF
+* Removing equivalent faults from total fault list.
 
-Path Delay Fault model
+#### Fault Aliasing
 
-5️⃣ Fault Categories
-Fault Dominance
+##### A fault is aliased when:
 
-Fault F dominates fault G if:
+* Observed by even number of scan cells
 
-Detecting set of F contains that of G
+* Located in different scan chains
 
-Fault Equivalence
+* Compacted to same output channel
 
-Faults F1 and F2 are equivalent if:
+## 📂 04_ATPG/02_fault_classes.md
+### Fault Classes
 
-All tests detecting F1 detect F2
+#### Tool categorizes faults based on:
 
-And vice versa
+* How detected
 
-Fault Collapse
+* Why not detected
 
-Removing equivalent faults from total fault list.
+### 1️⃣ Untestable (UT)
 
-Fault Aliasing
+* No pattern can exist to detect them.
 
-A fault is aliased when:
+#### These faults:
 
-Observed by even number of scan cells
+* Cannot cause functional failures
 
-Located in different scan chains
+* Excluded when calculating test coverage
 
-Compacted to same output channel
+#### Subclasses of UT
+##### UU – Unused
 
-📂 04_ATPG/02_fault_classes.md
-Fault Classes
+* Faults on circuitry unconnected to observation point
 
-Tool categorizes faults based on:
+* Faults on floating primary outputs
 
-How detected
+##### TI – Tied
 
-Why not detected
+* Fault location tied to same value as stuck value
 
-1️⃣ Untestable (UT)
+##### BL – Blocked
 
-No pattern can exist to detect them.
+* Tied logic blocks path to observation point
 
-These faults:
+##### RE – Redundant
 
-Cannot cause functional failures
+* Proven undetectable after exhaustive analysis
 
-Excluded when calculating test coverage
+### 2️⃣ Testable Faults
 
-Subclasses of UT
-UU – Unused
+* All faults that cannot be proven untestable.
 
-Faults on circuitry unconnected to observation point
+#### Detected (DT)
 
-Faults on floating primary outputs
+* Faults identified as detected.
 
-TI – Tied
+##### Subgroups:
+##### DS – det_simulation
 
-Fault location tied to same value as stuck value
+* Detected during fault simulation
 
-BL – Blocked
+##### DI – det_implication
 
-Tied logic blocks path to observation point
+* Detected during learning analysis
 
-RE – Redundant
+###### Subclasses of DI:
 
-Proven undetectable after exhaustive analysis
+* scan_path
 
-2️⃣ Testable Faults
+* scan_enable
 
-All faults that cannot be proven untestable.
+* clock
 
-Detected (DT)
+* set_reset
 
-Faults identified as detected.
+* Posdet (PD)
 
-Subgroups:
-DS – det_simulation
+#### Possible-detected faults:
 
-Detected during fault simulation
+* Good machine = 0/1
 
-DI – det_implication
+* Faulty machine = X
 
-Detected during learning analysis
-
-Subclasses of DI:
-
-scan_path
-
-scan_enable
-
-clock
-
-set_reset
-
-Posdet (PD)
-
-Possible-detected faults:
-
-Good machine = 0/1
-
-Faulty machine = X
-
-Hard-detected:
+* Hard-detected:
 
 Binary difference
+#### Untestable
+##### ATPG_Untestable (AU)
 
-ATPG_Untestable (AU)
+* Testable faults not detected due to tool constraints.
 
-Testable faults not detected due to tool constraints.
+##### AU Subclasses
 
-AU Subclasses
+###### AU.BB – Black Boxes
 
-AU.BB – Black Boxes
+###### AU.PC – Pin Constraints
 
-AU.PC – Pin Constraints
+###### AU.TC – Tied Cells
 
-AU.TC – Tied Cells
+###### AU.CC – Cell Constraints
 
-AU.CC – Cell Constraints
+###### AU.UDN – Undriven
 
-AU.UDN – Undriven
+###### AU.WIRE – Wire Contention
 
-AU.WIRE – Wire Contention
+###### AU.SEQ – Sequential Depth
 
-AU.SEQ – Sequential Depth
+###### AU.EDT – EDT Blocks
 
-AU.EDT – EDT Blocks
+###### AU.IJTAG – IJTAG instruments
 
-AU.IJTAG – IJTAG instruments
+###### AU.OCC – On Chip Clock Control
 
-AU.OCC – On Chip Clock Control
+###### AU.MPO – Masked POs
 
-AU.MPO – Masked POs
-
-Sequential depth can be increased using:
-
+* Sequential depth can be increased using:
+```
 set_pattern_type -sequential
+```
+#### Undetected (UD)
+##### UC – Uncontrolled
+##### UO – Unobserved
+##### UD.AAB – ATPG Abort
 
-Undetected (UD)
-UC – Uncontrolled
-UO – Unobserved
-UD.AAB – ATPG Abort
-
-Increase abort limit:
-
+* Increase abort limit:
+```
 set_abort_limit
+```
+##### UD.UNS – Unsuccess
+##### UD.EAB – EDT Abort
+####Fault Coverage
 
-UD.UNS – Unsuccess
-UD.EAB – EDT Abort
-Fault Coverage
-
-Fault Coverage =
+* Fault Coverage =
 Detected faults / Total faults
 
-Test Coverage =
+* Test Coverage =
 Detectable faults / Testable faults
 
-Test coverage > Fault coverage
+* Test coverage > Fault coverage
 
-We focus on improving test coverage.
+* We focus on improving test coverage.
 
-📂 04_ATPG/03_pattern_types.md
-Pattern Types
-1️⃣ Serial Patterns
+## 📂 04_ATPG/03_pattern_types.md
+### Pattern Types
+### 1️⃣ Serial Patterns
 
-Loaded serially
+#### Loaded serially
 
-Shift cycles = number of flops in chain (without EDT)
+* Shift cycles = number of flops in chain (without EDT)
 
-Serial without EDT:
+#### Serial without EDT:
 
-Shift cycles =
+* Shift cycles =
 Number of flops + masking bits + initialization cycles
 
-Capture:
+#### Capture:
 
-1 clock pulse
+* 1 clock pulse
 
-Procedure:
+##### Procedure:
 
-Force SI
+1. Force SI
 
-Measure SO
+2. Measure SO
 
-Pulse clock
+3. Pulse clock
 
-2️⃣ Parallel Patterns
+### 2️⃣ Parallel Patterns
 
-Loaded parallelly
+#### Loaded parallelly
 
-Only 1 shift clock required
+* Only 1 shift clock required
 
-Procedure:
+##### Procedure:
 
-Sense scan cell
+1. Sense scan cell
 
-Force parallel data
+2. Force parallel data
 
-Pulse clock
+3. Pulse clock
 
-Important:
+###### Important:
 
-Measure output first
+* Measure output first
 
-Because ‘force’ overwrites previous flop value
+* Because ‘force’ overwrites previous flop value
 
-Why Both Needed?
-Parallel Patterns
+#### Why Both Needed?
+##### Parallel Patterns
 
-Less runtime
+* Less runtime
 
-Easy debug
+* Easy debug
 
-Validate all patterns before manufacturing
+* Validate all patterns before manufacturing
 
-Serial Patterns
+##### Serial Patterns
 
-Tester uses serial patterns
+* Tester uses serial patterns
 
-Validate sample before going to tester
+* Validate sample before going to tester
 
-📂 04_ATPG/04_atpg_flow.md
-ATPG Flow
+## 📂 04_ATPG/04_atpg_flow.md
+### ATPG Flow
+```
 SETUP → ANALYSIS → Coverage Improvement → Finalize Patterns
+```
+### 1️⃣ SETUP Phase
 
-1️⃣ SETUP Phase
+* Read input files and configure.
 
-Read input files and configure.
-
-For EDT patterns:
-
+* For EDT patterns:
+```
 edt_top_gate.v
 
 edt.dofile
-
-internally calls edt_testproc
-
-For bypass patterns:
-
+```
+internally calls
+```
+edt_testproc
+```
+* For bypass patterns:
+```
 edt_top_gate.v
 
 bypass.dofile
+```
+internally calls
+```
+bypass.testproc
+```
+### 2️⃣ ANALYSIS Phase
 
-internally calls bypass.testproc
+* Check DRC
 
-2️⃣ ANALYSIS Phase
+* Generate patterns
 
-Check DRC
+* Get coverage
 
-Generate patterns
+* Write output patterns
 
-Get coverage
+## 📂 04_ATPG/05_coverage_improvement.md
+### Coverage Improvement (SA Model)
+### AU.PC
 
-Write output patterns
-
-📂 04_ATPG/05_coverage_improvement.md
-Coverage Improvement (SA Model)
-AU.PC
-
-Step 1:
-
+#### Step 1:
+```
 write_faults <file> -class AU.PC -replace
+```
 
-
-Step 2:
-
+#### Step 2:
+```
 analyze_fault <pin hierarchy> -stuck 0/1 -D
+```
 
+#### Step 3:
 
-Step 3:
+* Visualize and give data
 
-Visualize and give data
+##### Fix:
 
-Fix:
+* Add new flop
 
-Add new flop
+### AU.SEQ
 
-AU.SEQ
-
-Step 1:
-
+#### Step 1:
+```
 write_faults <file> -class AU.SEQ -replace
+```
 
-
-Step 2:
-
+#### Step 2:
+```
 analyze_fault <pin hierarchy> -stuck 0/1 -D
+```
 
+##### Fix:
 
-Fix:
+* Increase sequential depth
 
-Increase sequential depth
+### AU.WIRE
 
-AU.WIRE
-
-Step 1:
-
+#### Step 1:
+```
 write_faults <file> -class AU.WIRE -replace
+```
 
-
-Step 2:
-
+#### Step 2:
+```
 analyze_fault <pin hierarchy> -stuck 0/1 -D
+```
 
+##### Fix:
 
-Fix:
-
-Ensure wire driven by single logic
+* Ensure wire driven by single logic
 
 --------------------------------------------------------------------
 
