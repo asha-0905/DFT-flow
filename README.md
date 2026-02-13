@@ -1311,144 +1311,147 @@ analyze_fault <pin hierarchy> -stuck 0/1 -D
 
 --------------------------------------------------------------------
 
-📂 05_Scan_Insertion/01_scan_basics.md
-Scan Insertion Basics
-1️⃣ Invoking Scan Insertion Flow
-Source Mentor Environment
+## 📂 05_Scan_Insertion/01_scan_basics.md
+### Scan Insertion Basics
+### 1️⃣ Invoking Scan Insertion Flow
+* Source Mentor Environment
+```
 source /home/cshrc
-
+```
 Invoke Tessent Shell
+```
 /home/TESSENT/bin/tessent -shell
+```
+### 2️⃣ Input Files Required
 
-2️⃣ Input Files Required
+* Design input file (Gate-level netlist)
 
-Design input file (Gate-level netlist)
+* Library file (Contains functionality of each and every cell in design)
 
-Library file
-(Contains functionality of each and every cell in design)
+### 3️⃣ Files Created by Us
 
-3️⃣ Files Created by Us
+#### Dofile
 
-Dofile
+* Stores instructions/commands
 
-Stores instructions/commands
+#### Log file
 
-Log file
+* Stores tool execution details
 
-Stores tool execution details
+### 4️⃣ Scan Insertion Phases
+* SETUP → ANALYSIS → INSERTION
 
-4️⃣ Scan Insertion Phases
-SETUP → ANALYSIS → INSERTION
+### 5️⃣ SETUP Phase
 
-5️⃣ SETUP Phase
+* Set context (scan/edt)
 
-Set context (scan/edt)
+* Read design files
 
-Read design files
+* Read library files
 
-Read library files
+* Elaboration
 
-Elaboration
+* Fix DRC violations after analysis
 
-Fix DRC violations after analysis
+### 6️⃣ ANALYSIS Phase
 
-6️⃣ ANALYSIS Phase
+* Check DRC violations
 
-Check DRC violations
+* Analyze violations
 
-Analyze violations
+* Declare number of scan chains
 
-Declare number of scan chains
+### 7️⃣ INSERTION Phase
 
-7️⃣ INSERTION Phase
+* Replace normal flops with scan flops
 
-Replace normal flops with scan flops
+* Insert scan structures
 
-Insert scan structures
+* Add scan mux
 
-Add scan mux
+* Build scan chains
 
-Build scan chains
+* Generate reports and output files
 
-Generate reports and output files
+### 8️⃣ Scan Structure Details
+* Flops with Scan Cells
 
-8️⃣ Scan Structure Details
-Replace Flops with Scan Cells
+* Normal flop → Scan flop
 
-Normal flop → Scan flop
+* Add Mux to Flop
 
-Add Mux to Flop
+#### Mux inputs:
 
-Mux inputs:
+* Functional input (0)
 
-Functional input (0)
+* Scan input (1)
 
-Scan input (1)
+#### Mux output → Flop D input
 
-Mux output → Flop D input
+#### Build Scan Chains
 
-Build Scan Chains
+* All scan flops stitched together
 
-All scan flops stitched together
+* Form shift and capture paths
 
-Form shift and capture paths
+### 9️⃣ Test Mode and Scan Enable
+#### Test Mode (TM)
 
-9️⃣ Test Mode and Scan Enable
-Test Mode (TM)
+* TM = 0 → Functional mode
 
-TM = 0 → Functional mode
+* TM = 1 → Test mode
 
-TM = 1 → Test mode
+#### Scan Enable (SE)
 
-Scan Enable (SE)
+* SE = 1 → Shift phase
 
-SE = 1 → Shift phase
+* SE = 0 → Capture phase
 
-SE = 0 → Capture phase
+### Outputs Generated
 
-🔟 Outputs Generated
+* Scan inserted netlist
 
-Scan inserted netlist
+* ATPG Dofile
 
-ATPG Dofile
+* ATPG testproc
 
-ATPG testproc
+* Scandef file
 
-Scandef file
+* Scan Inserted Netlist
 
-Scan cell report
+##### Normal flops replaced with scan flops
 
-Scan chain report
+##### Scan chains stitched
 
-Scan DRC report
+##### New ports added:
 
-Scan Inserted Netlist
+* scan_en
 
-Normal flops replaced with scan flops
+* scan_in
 
-Scan chains stitched
+* scan_out
 
-New ports added:
+### Reports Generated
 
-scan_en
+* Scan cell report
 
-scan_in
+* Scan chain report
 
-scan_out
+* Scan DRC report
 
-Scan Chain Report
+##### Scan Chain Report
 
-Contains:
+###### Contains:
 
-Number of scan chains
+* Number of scan chains
 
-Information about each chain
+* Information about each chain
 
-Scan Cell Report
+##### Scan Cell Report
 
-Contains:
+###### Contains:
 
-Scan cell details
+* Scan cell details
 
 📂 05_Scan_Insertion/02_scan_drc_and_fixes.md
 Scan DRC and Fixes
