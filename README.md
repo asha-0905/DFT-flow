@@ -593,255 +593,245 @@ edt_top_gate.v
 
 ---------------------------------------------------------------------------------------
 
-📂 03_Simulation/01_timing_simulation_basics.md
-Timing Simulation Basics
-1️⃣ Purpose of Simulation
+# 📂 03_Simulation/01_timing_simulation_basics.md
+## Timing Simulation Basics
+### 1️⃣ Purpose of Simulation
 
-Simulation is done:
+#### Simulation is done:
 
-To validate the patterns generated during ATPG
+* To validate the patterns generated during ATPG
 
-To ensure patterns work correctly before sending them to tester
+* To ensure patterns work correctly before sending them to tester
 
-2️⃣ Need for Timing Simulation
+### 2️⃣ Need for Timing Simulation
 
-During ATPG:
+#### During ATPG:
 
-Timing (cell delays and net delays) is not considered
+* Timing (cell delays and net delays) is not considered
 
-Patterns are generated without delay information
+* Patterns are generated without delay information
 
-Before giving patterns to the tester:
+##### Before giving patterns to the tester:
 
-We must verify them with actual delays
+* We must verify them with actual delays
 
-Hence, timing simulation is required
+* Hence, timing simulation is required
 
-3️⃣ PD Netlist and Timing Data
+### 3️⃣ PD Netlist and Timing Data
 
-Flow:
-
+#### Flow:
+```
 PD Netlist → STA → Timing Reports + SDF
+```
 
+* STA generates timing reports
 
-STA generates timing reports
+* SDF (Standard Delay Format) file is generated
 
-SDF (Standard Delay Format) file is generated
+### 4️⃣ SDF (Standard Delay Format)
 
-4️⃣ SDF (Standard Delay Format)
+#### SDF contains:
 
-SDF contains:
+* Delay of each and every cell
 
-Delay of each and every cell
+* Delay of each and every net
 
-Delay of each and every net
+#### In QuestaSim:
 
-In QuestaSim:
+* When SDF file is read Tool maps delays to design, This mapping is called: Annotation
 
-When SDF file is read
+* Annotation = Mapping SDF delays to design cells and nets.
 
-Tool maps delays to design
+### 5️⃣ Simulation vs Tester
 
-This mapping is called:
+#### After manufacturing:
 
-Annotation
+* Tester (ATE) applies patterns on the design
 
-Annotation = Mapping SDF delays to design cells and nets.
+#### During simulation:
 
-5️⃣ Simulation vs Tester
+* Testbench is used
 
-After manufacturing:
+* Testbench mimics the tester
 
-Tester (ATE) applies patterns on the design
+#### If:
 
-During simulation:
+* Simulated output = Expected output → Patterns are correct
 
-Testbench is used
+* Simulated output ≠ Expected output → Simulation mismatch
 
-Testbench mimics the tester
+### 6️⃣ Serial vs Parallel Simulation
+#### Serial Simulation
 
-If:
+* Patterns loaded serially into scan chain
 
-Simulated output = Expected output → Patterns are correct
+#### Parallel Simulation
 
-Simulated output ≠ Expected output → Simulation mismatch
+* Patterns loaded parallelly into scan chain
 
-6️⃣ Serial vs Parallel Simulation
-Serial Simulation
+## 📂 03_Simulation/02_simulation_flow.md
+## Simulation Flow
+### 1️⃣ Compilation
 
-Patterns loaded serially into scan chain
+* Tool checks for syntax errors.
 
-Parallel Simulation
-
-Patterns loaded parallelly into scan chain
-
-📂 03_Simulation/02_simulation_flow.md
-Simulation Flow
-1️⃣ Compilation
-
-Tool checks for syntax errors.
-
-Command:
-
+* Command:
+```
 vlog pattern_serial_sample.v -f Verilog_files.list +nospecify -override 1ns/1ps -work work -l compile.log
+```
 
+#### Tool takes:
 
-Tool takes:
+* Library
 
-Library
+* Netlist
 
-Netlist
+* Testbench
 
-Testbench
+### 2️⃣ Elaboration
 
-2️⃣ Elaboration
+* Elaborate design with respect to top module.
 
-Elaborate design with respect to top module.
-
-Command:
-
+* Command:
+```
 vsim
+```
+### 3️⃣ Simulation
 
-3️⃣ Simulation
+* Apply stimuli to DUT.
 
-Apply stimuli to DUT.
-
-Command:
-
+* Command:
+```
 vsim -c debugDB -voptargs=+acc DmaWr_pattern_serial_sample_v_ctl -do “add wave -r /*; run -all” -c +nospecify -l simulation.log -wlf wave.wlf
-
-4️⃣ Pattern Files Used
-Pattern File
+```
+### 4️⃣ Pattern Files Used
+#### Pattern File
+```
 Pattern_serial_sample.v.0.vec
+```
 
+#### Vector file
 
-Vector file
+* Contains pattern data
 
-Contains pattern data
-
-PO Name File
+* PO Name File
+```
 Pattern_serial_sample.v.po.name
-
+```
 
 Contains:
 
-PO names
+* PO names
 
-edt_channel_out names
+* edt_channel_out names
 
-Comparison between:
+* Comparison between: Simulated value and Expected value is done at all these locations.
 
-Simulated value
+### 5️⃣ Testbench Role
 
-Expected value
-
-is done at all these locations.
-
-5️⃣ Testbench Role
-
-The above two files are called inside:
-
+* The above two files are called inside:
+```
 pattern_serial_sample.v
+```
 
+#### Testbench:
 
-Testbench:
+* Applies pattern to design
 
-Applies pattern to design
+* Mimics tester behavior
 
-Mimics tester behavior
+### 6️⃣ Running Simulation Script
 
-6️⃣ Running Simulation Script
-
-To source simulation script:
-
+* To source simulation script:
+```
 source simulation.csh
+```
+### 7️⃣ Opening Waveform
 
-7️⃣ Opening Waveform
-
-Waveform file:
-
+* Waveform file:
+```
 wave.wlf
+```
 
-
-Command:
-
+* Command:
+```
 vsim wave.wlf
+```
+### 8️⃣ Reasons for Simulation Mismatches
 
-8️⃣ Reasons for Simulation Mismatches
+* Internal cut points
 
-Internal cut points
+* Hold violation in Q-SI path not fixed
 
-Hold violation in Q-SI path not fixed
+* False path (SDC not read during ATPG TDF run)
 
-False path (SDC not read during ATPG TDF run)
+* Wrong database (pattern vs netlist release mismatch)
 
-Wrong database (pattern vs netlist release mismatch)
+* Library file mismatch
 
-Library file mismatch
+## 📂 03_Simulation/03_mismatch_debug_methodology.md
+## Simulation Mismatch Debug Methodology
+### 1️⃣ Creating a Mismatch Scenario (For Practice)
 
-📂 03_Simulation/03_mismatch_debug_methodology.md
-Simulation Mismatch Debug Methodology
-1️⃣ Creating a Mismatch Scenario (For Practice)
-
-To practice debugging:
+* To practice debugging:
 
 Use:
-
+```
 case1_edt_top_gate.v
+```
 
+* Generate patterns
 
-Generate patterns
+#### Write all patterns
 
-Write all patterns
+* Do not use -begin and -end switch in write_pattern
 
-Do not use -begin and -end switch in write_pattern
+#### Go to edt outputs directory
 
-Go to edt outputs directory
-
-Create copy of:
-
+* Create copy of:
+```
 case1_edt_top_gate.v
+```
 
-
-Rename it to:
-
+* Rename it to:
+```
 simulation_mismatch.v
+```
 
+#### Modify design:
 
-Modify design:
+* Ground A input of u8 AND gate
 
-Ground A input of u8 AND gate
+* This creates a mismatch scenario.
 
-This creates a mismatch scenario.
+### 2️⃣ Why Use Parallel Simulation for Debug?
 
-2️⃣ Why Use Parallel Simulation for Debug?
+#### For debugging mismatches:
 
-For debugging mismatches:
+* Use parallel simulation
 
-Use parallel simulation
+* We can exactly identify which flop is failing
 
-We can exactly identify which flop is failing
+### 3️⃣ Steps for Simulation Mismatch Debug
+#### Step 1: Check Simulation Log
 
-3️⃣ Steps for Simulation Mismatch Debug
-Step 1: Check Simulation Log
+##### In simulation log:
 
-In simulation log:
+* Identify failing flop
 
-Identify failing flop
+* Identify failing pattern number
 
-Identify failing pattern number
+* Identify timestamp of failure
 
-Identify timestamp of failure
+#### Step 2: Open Waveform
 
-Step 2: Open Waveform
+* Open QuestaSim waveform
 
-Open QuestaSim waveform
+* Load failing flop waveform
 
-Load failing flop waveform
+* Go to failure timestamp
 
-Go to failure timestamp
-
-Step 3: Open ATPG Session
+#### Step 3: Open ATPG Session
 
 In ATPG:
 
