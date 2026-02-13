@@ -1,27 +1,8 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 DFT-Complete-Flow/
+
 │
 ├── README.md
+
 │
 ├── 01_MBIST_Insertion/
 
@@ -34,29 +15,53 @@ DFT-Complete-Flow/
 │   └── 04_ijtag_and_sib_architecture.md
 
 │
+
 ├── 02_EDT_OCC_Insertion/
+
 │   ├── 01_edt_architecture.md
+
 │   ├── 02_occ_architecture.md
+
 │   ├── 03_edt_insertion_flow.md
+
 │
+
 ├── 03_Simulation/
+
 │   ├── 01_timing_simulation_basics.md
+
 │   ├── 02_simulation_flow.md
+
 │   ├── 03_mismatch_debug_methodology.md
+
 │
+
 ├── 04_ATPG/
+
 │   ├── 01_fault_models.md
+
 │   ├── 02_fault_classes.md
+
 │   ├── 03_pattern_types.md
+
 │   ├── 04_atpg_flow.md
+
 │   ├── 05_coverage_improvement.md
+
 │
+
 ├── 05_Scan_Insertion/
+
 │   ├── 01_scan_basics.md
+
 │   ├── 02_scan_drc_and_fixes.md
+
 │   ├── 03_chain_balancing_and_merging.md
+
 │
+
 └── scripts/
+
     ├── mbist_flow.tcl
     ├── edt_flow.tcl
     ├── atpg_flow.tcl
