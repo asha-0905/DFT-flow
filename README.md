@@ -1689,5 +1689,125 @@ Scan DRC report
 Scandef file
 
 
+---------------------------------------------------------------------------------------------------
+===================================================================================================
 
+01_MBIST_Insertion/
+01_wrapper_and_graybox.md
+Wrapper Insertion and Graybox Generation
+Why Wrapper Insertion?
+
+ATPG process on very large and complex designs can often be unpredictable
+
+While doing DFT at block level, we will not be checking the interconnects between 2 blocks
+
+But the interconnects may have defects
+
+We insert wrapper cells in order to test the interconnection between the blocks
+
+Wrapper Chains
+
+Wrapper chains are a series of scan cells connected to the boundary of the design
+
+Wrapper chains are scan chains around the periphery of a block that connect to each input and output of the block to be tested
+
+Wrapper cells may be of type dedicated cell or shared cell
+
+Shared Wrapper Cells
+
+When the PI of a block directly connects to a flop
+
+Or connects to a flop through small combinational logic
+
+The tool will reuse that flop as a wrapper flop
+
+Similarly applicable for PO
+
+Dedicated Wrapper Cells
+
+Insert wrapper cells on input ports
+
+Adding new wrapper cells
+
+Dedicated wrapper chains are inserted into the scan chain configuration
+
+insert_test_logic
+
+
+This approach will add area overhead
+
+Why Shared Wrappers?
+
+To overcome the area overhead increase problem
+
+Re-using the existing flops as wrapper cells
+
+INTEST Mode
+
+All inputs to submodules are controllable using Input wrapper scan chains
+
+All outputs are observable through Output wrapper scan chains
+
+Input wrapper chains launch data into inside logic
+
+Output wrapper chains capture data from inside logic
+
+EXTEST Mode
+
+All outputs from submodules are controllable using Output wrapper scan chains
+
+All inputs are observable through Input wrapper scan chains
+
+Output wrapper chains launch data into outside logic
+
+Input wrapper chains capture data from outside logic
+
+Tool uses input and output wrapper chains to provide test coverage of hierarchical designs during INTEST and EXTEST modes.
+
+Wrapper Chain Commands
+set_wrapper_analysis_options
+
+
+-exclude port port_spec
+
+set_dedicated_wrapper_cell_options
+
+
+Default: auto
+
+set_dedicated_wrapper_cell_options on -ports rst
+
+analyze_wrapper_chains
+
+Scan Modes for Wrapped Core
+add_scan_mode int_mode -edt_instances corea_rtl2_tessent_edt_c1_inst
+
+add_scan_mode ext_mode -chain_length 32
+
+analyze_scan_chains
+insert_test_logic
+
+Graybox
+
+Graybox is simplified representation of core module describing periphery logic
+
+Used when only boundary logic is required
+
+Inserted wrapper chains of the block will be included in the graybox
+
+get_config_elements Core(corea)/Scan/Mode -part tcd -silent
+get_config_value
+Import_scan_mode
+set_attribute_value [get_portsedt_channel] -name ignore_for_graybox
+analyze_graybox
+write_design -tsdb -graybox -verbose
+
+mode_name	mode_type
+int_mode	internal
+ext_mode	external
+02_mbist_architecture_and_fault_models.md
+Memory Types
+Memory	Operation
+RAM	Read, Write
+ROM	Read only
 
