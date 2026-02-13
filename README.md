@@ -1,3 +1,4 @@
+```
 DFT-Complete-Flow/
 
 │
@@ -61,6 +62,7 @@ DFT-Complete-Flow/
 │
 
 └── scripts/
+```
 
     ├── mbist_flow.tcl
     ├── edt_flow.tcl
@@ -109,7 +111,9 @@ Adding new wrapper cells
 
 Dedicated wrapper chains are inserted into the scan chain configuration when you issue:
 
+```
 insert_test_logic
+```
 
 
 This approach will add area overhead
