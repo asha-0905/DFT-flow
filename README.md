@@ -58,78 +58,74 @@ DFT-Complete-Flow/
 
 * We insert wrapper cells in order to test the interconnection between the blocks
 
-2️⃣ Wrapper Chains
+## 2️⃣ Wrapper Chains
 
-Wrapper chains are a series of scan cells connected to the boundary of the design
+* Wrapper chains are a series of scan cells connected to the boundary of the design
 
-Wrapper chains are scan chains around the periphery of a block that connect to each input and output of the block to be tested
+* Wrapper chains are scan chains around the periphery of a block that connect to each input and output of the block to be tested
 
-Wrapper cells may be of type dedicated cell or shared cell
+* Wrapper cells may be of type dedicated cell or shared cell
 
-Shared Wrapper Cells
+### * Shared Wrapper Cells
 
-When the PI of a block directly connects to a flop
+* When the PI of a block directly connects to a flop Or connects to a flop through small combinational logic. The tool will reuse that flop as a wrapper flop (shared wrapper)
 
-Or connects to a flop through small combinational logic
+* Similarly applicable for PO
 
-The tool will reuse that flop as a wrapper flop (shared wrapper)
+### * Dedicated Wrapper Cells
 
-Similarly applicable for PO
+* Insert wrapper cells on input ports
 
-Dedicated Wrapper Cells
+* Adding new wrapper cells
 
-Insert wrapper cells on input ports
-
-Adding new wrapper cells
-
-Dedicated wrapper chains are inserted into the scan chain configuration when you issue:
+* Dedicated wrapper chains are inserted into the scan chain configuration when you issue:
 
 ```
 insert_test_logic
 ```
 
 
-This approach will add area overhead
+* This approach will add area overhead
 
-Why Shared Wrappers?
+#### * Why Shared Wrappers?
 
-To overcome the area overhead increase problem
+* To overcome the area overhead increase problem
 
-Re-using the existing flops as wrapper cells
+* Re-using the existing flops as wrapper cells
 
-3️⃣ Wrapper Operating Modes
+## 3️⃣ Wrapper Operating Modes
 
-INTEST Mode
+### INTEST Mode
 
-All inputs to submodules are controllable using Input wrapper scan chains
+* All inputs to submodules are controllable using Input wrapper scan chains
 
-All outputs are observable through Output wrapper scan chains
+* All outputs are observable through Output wrapper scan chains
 
-Input wrapper chains launch data into inside logic
+I* nput wrapper chains launch data into inside logic
 
-Output wrapper chains capture data from inside logic
+* Output wrapper chains capture data from inside logic
 
-EXTEST Mode
+### EXTEST Mode
 
-All outputs from submodules are controllable using Output wrapper scan chains
+* All outputs from submodules are controllable using Output wrapper scan chains
 
-All inputs are observable through Input wrapper scan chains
+* All inputs are observable through Input wrapper scan chains
 
-Output wrapper chains launch data into outside logic
+* Output wrapper chains launch data into outside logic
 
-Input wrapper chains capture data from outside logic
+* Input wrapper chains capture data from outside logic
 
-Tool uses input and output wrapper chains to provide test coverage of hierarchical designs during INTEST and EXTEST modes.
+* Tool uses input and output wrapper chains to provide test coverage of hierarchical designs during INTEST and EXTEST modes.
 
-4️⃣ Wrapper Chain Commands
+## 4️⃣ Wrapper Chain Commands
 ```
 set_wrapper_analysis_options
 set_wrapper_analysis_options
 ```
 
-Sets parameters for wrapper cell analysis
+* Sets parameters for wrapper cell analysis
 
-Option:
+* Option:
 ```
 -exclude port port_spec → Excludes specified ports from wrapper analysis
 
@@ -137,59 +133,59 @@ set_dedicated_wrapper_cell_options
 set_dedicated_wrapper_cell_options
 ```
 
-Specifies how each port is handled during wrapper analysis
+* Specifies how each port is handled during wrapper analysis
 
-Default: auto
+* Default: auto
 
-During wrapper analysis, tool checks if PI drives set/reset of flop
+* During wrapper analysis, tool checks if PI drives set/reset of flop
 
-If yes → dedicated wrapper inferred
+* If yes → dedicated wrapper inferred
 
-Lab usage:
+* Lab usage:
 ```
 set_dedicated_wrapper_cell_options on -ports rst
 ```
 
-Adds dedicated wrapper for PIs driving reset ports
+* Adds dedicated wrapper for PIs driving reset ports
 ```
 analyze_wrapper_chains
 analyze_wrapper_chains
 ```
 
-Identifies shared and dedicated wrapper cells for PI and PO
+* Identifies shared and dedicated wrapper cells for PI and PO
 
-Works with set_dedicated_wrapper_cell_options
+* Works with set_dedicated_wrapper_cell_options
 
-5️⃣ Scan Modes for Wrapped Core
+## 5️⃣ Scan Modes for Wrapped Core
 
-For wrapped core:
+* For wrapped core:
 ```
 add_scan_mode int_mode -edt_instances corea_rtl2_tessent_edt_c1_inst
 ```
 
-Automatically takes configurations mentioned during EDT OCC run
+* Automatically takes configurations mentioned during EDT OCC run
 ```
 add_scan_mode ext_mode -chain_length 32
 
 analyze_scan_chains
 ```
 
-Distributes scan elements into new scan chains
+* Distributes scan elements into new scan chains
 ```
 insert_test_logic
 
 ```
-Inserts test structures and stitches scan chains
+* Inserts test structures and stitches scan chains
 
-6️⃣ Graybox
+## 6️⃣ Graybox
 
-Graybox is simplified representation of core module describing periphery logic
+* Graybox is simplified representation of core module describing periphery logic
 
-Used when only boundary logic is required
+* Used when only boundary logic is required
 
-Inserted wrapper chains are included in graybox
+* Inserted wrapper chains are included in graybox
 
-Graybox Commands
+* Graybox Commands
 ```
 get_config_elements Core(corea)/Scan/Mode -part tcd -silent
 
@@ -200,23 +196,23 @@ Import_scan_mode
 set_attribute_value [get_ports*edt_channel*] -name ignore_for_graybox
 
 ```
-Setting ignore_for_graybox on any pin has no effect on graybox analysis
+* Setting ignore_for_graybox on any pin has no effect on graybox analysis
 ```
 analyze_graybox
 
 write_design -tsdb -graybox -verbose
 ```
 
-Mode Parameters:
+#### * Mode Parameters:
 
-mode_name: int_mode, ext_mode
+* mode_name: int_mode, ext_mode
 
-mode_type: internal, external
+* mode_type: internal, external
 
-📄 02_mbist_architecture_and_fault_models.md
-MBIST Strategy and Fault Models
-1️⃣ Plan MBIST Strategy
-2️⃣ Memory Types
+# 📄 02_mbist_architecture_and_fault_models.md
+## MBIST Strategy and Fault Models
+## 1️⃣ Plan MBIST Strategy
+## 2️⃣ Memory Types
 
 RAM → Read, Write
 
