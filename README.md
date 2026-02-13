@@ -543,7 +543,7 @@ Instrument connectivity
 
 These outputs are used directly for ATPG and simulation.
 
-
+----------------------------------------------------------------------new--------------------------------------------------------------------------------------
 
 
 
@@ -1111,3 +1111,436 @@ Writes outputs to TSDB
 ✔ Graybox Netlist
 ✔ SDC Constraints
 ✔ Updated Netlist in TSDB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+📌 1️⃣ MBIST PLANNING, JTAG & IJTAG INSERTION
+1. JTAG AND BOUNDARY SCAN ARCHITECTURE
+1.1 Need for JTAG
+
+In complex SoC designs, there are many DFT control signals such as:
+
+TM
+
+edt_bypass_en
+
+int_mode
+
+ext_mode
+
+int_ltest_en
+
+ext_ltest_en
+
+mbist_bypass_en
+
+tck_occ_en
+
+ltest_en
+
+and many more…
+
+If all these signals are controlled directly from top-level ports:
+
+❌ Top-level port count increases drastically
+❌ Routing congestion increases
+❌ Tester channel requirement increases
+
+✅ Solution: JTAG (IEEE 1149.1)
+
+Using JTAG, we can internally control all static DFT signals using only 5 pins:
+
+TDI
+
+TDO
+
+TCK
+
+TMS
+
+TRST (optional)
+
+Static vs Dynamic Signals
+Type	Controlled Through
+Static signals (constant during run)	JTAG TDR
+Dynamic signals (toggle during test)	Top-level ports
+
+Example:
+
+Static → edt_bypass_en, TM
+
+Dynamic → SE, edt_update
+
+1.2 JTAG Architecture
+
+JTAG consists of:
+
+TAP (Test Access Port)
+
+TAP Controller (16-state FSM)
+
+Instruction Register (IR)
+
+Data Registers (DRs)
+
+MUX logic
+
+Decoder
+
+1.2.1 TAP Signals
+Signal	Description
+TDI	Serial Test Data Input
+TDO	Serial Test Data Output
+TCK	Test Clock
+TMS	Test Mode Select
+TRST	Optional Reset
+1.2.2 TAP Controller (16-State FSM)
+Major States
+
+Test-Logic-Reset
+
+Run-Test/Idle
+
+IR Path
+
+DR Path
+
+Test-Logic-Reset State
+
+Entered when:
+
+TRST_N = 0
+
+TMS = 1 for ≥ 5 TCK cycles
+
+Power-up condition
+
+In this state:
+
+Test logic disabled
+
+Functional mode active
+
+Run-Test/Idle
+
+Used when:
+
+Core logic test is running
+
+Signals like int_mode, ext_mode, int_ltest_en are set
+
+FSM remains here until operation completes.
+
+1.2.3 IR Operation
+Capture-IR
+
+Loads fixed pattern (LSB = 01)
+
+Detects SA0/SA1 faults on TDI/TDO
+
+Shift-IR
+
+Instruction serially loaded
+
+One bit per TCK cycle
+
+Update-IR
+
+Shift register value moved to hold register
+
+IR Width
+
+Minimum = 2 bits
+Mandatory instructions:
+
+EXTEST
+
+SAMPLE/PRELOAD
+
+BYPASS
+
+Width increases depending on number of DRs.
+
+1.2.4 DR Operation
+Capture-DR
+
+Loads parallel data into selected DR
+
+Shift-DR
+
+Serial shifting via TDI/TDO
+
+Update-DR
+
+Loads shifted data into hold register
+
+1.2.5 JTAG MUX Structure
+
+MUX A → Selects IR or DR path
+
+MUX B → Selects one Data Register
+
+Decoder reduces IR bit-width requirement
+
+1.3 Boundary Scan (BSCAN)
+Why Boundary Scan?
+
+Consider:
+
+Chip1, Chip2, Chip3 pass ATE test
+
+Board fails after assembly
+
+Cause:
+
+PCB interconnect manufacturing defects
+
+Solution:
+
+Insert Boundary Scan Cells (BSC)
+
+Boundary Scan Operation Modes
+Condition	Operation
+ShiftDR = 1	Shift between BSC cells
+Mode = 1	Apply test pattern to outputs
+ShiftDR = 0	Capture response
+Mode = 0	Normal operation
+Mandatory Instructions
+EXTEST
+
+PCB interconnect test
+
+Selects boundary scan register
+
+SAMPLE/PRELOAD
+
+Samples functional data
+
+Preloads values before EXTEST
+
+BYPASS
+
+Skips device in chain
+
+1-bit bypass register
+
+Optional: IDCODE
+
+Captures unique chip identification code
+
+Used to verify PCB device order
+
+2. WRAPPER INSERTION (HIERARCHICAL DFT)
+2.1 Why Wrappers?
+
+Block-level ATPG ignores inter-block connections
+
+Interconnect faults may exist
+
+Wrappers help test block boundaries
+
+2.2 Wrapper Types
+Dedicated Wrapper
+
+New scan cells added
+
+Higher area overhead
+
+Shared Wrapper
+
+Reuses existing flops
+
+Lower area overhead
+
+2.3 INTEST Mode
+
+Inputs controllable
+
+Outputs observable
+
+Used for internal logic testing
+
+2.4 EXTEST Mode
+
+Outputs controllable
+
+Inputs observable
+
+Used for interconnect testing
+
+2.5 TCL Commands for Wrapper
+Setup Wrapper Analysis
+set_wrapper_analysis_options
+
+
+Exclude ports:
+
+set_wrapper_analysis_options -exclude port port_spec
+
+Dedicated Wrapper for Reset Ports
+set_dedicated_wrapper_cell_options on -ports rst
+
+Analyze Wrapper Chains
+analyze_wrapper_chains
+
+3. SCAN MODE CREATION FOR WRAPPED CORE
+add_scan_mode int_mode -edt_instances corea_rtl2_tessent_edt_c1_inst
+add_scan_mode ext_mode -chain_length 32
+analyze_scan_chains
+insert_test_logic
+
+4. GRAYBOX GENERATION
+What is Graybox?
+
+Simplified boundary-only model of core
+
+Used for:
+
+Top-level ATPG
+
+Faster simulation
+
+Hierarchical test
+
+TCL Commands
+get_config_elements Core(corea)/Scan/Mode -part tcd -silent
+get_config_value
+import_scan_mode
+set_attribute_value [get_ports *edt_channel*] -name ignore_for_graybox
+analyze_graybox
+write_design -tsdb -graybox -verbose
+
+5. MBIST PLANNING
+5.1 Memory Types
+Type	Description
+RAM	Read / Write
+ROM	Read Only
+5.2 Memory Fault Models
+Single Cell Faults
+
+Stuck-at 0 / 1
+
+Transition Fault (0→1 or 1→0 failure)
+
+Double Cell Faults
+Coupling Fault
+
+Aggressor affects victim
+
+Types:
+
+State Coupling
+
+Inversion Coupling
+
+Idempotent Coupling
+
+Address Decoder Faults
+
+No cell accessed
+
+Cell never accessed
+
+One address → multiple cells
+
+Multiple addresses → same cell
+
+6. MEMORY TEST ALGORITHMS
+
+Test algorithm consists of:
+
+Memory operation (Read/Write)
+
+Data pattern (0/1)
+
+Address order (Ascending/Descending)
+
+Example:
+March-based algorithms
+
+7. TESSENT MBIST INSERTION FLOW (TCL)
+7.1 Set Context
+set_context dft -rtl -design_id first_insertion
+
+7.2 Set Output Directory
+set_tsdb_output_directory ../tsdb_outdir
+
+7.3 Read Libraries and Design
+read_cell_library ../../library/adk.tcelllib
+read_verilog ../../library/mems/SYNC_1R1W_16x8.v -exclude_from_file_directory -verbose
+read_verilog ../design/corea.v -verbose
+
+7.4 Elaborate Design
+set_current_design corea
+set_design_level physical_block
+
+7.5 Declare Memory Clocks
+add_clocks 0 clka -period 10ns
+add_clocks 0 clkb -period 20ns
+
+8. DFT SPECIFICATION & IJTAG NETWORK
+8.1 Enable Memory Test
+set_dft_specification_requirements -memory_test on
+
+8.2 Add Static DFT Signals (TDR Inserted)
+add_dft_signal tck_occ_en
+add_dft_signal ltest_en
+add_dft_signal memory_bypass_en
+
+8.3 Dynamic Signals (From Top-Level)
+add_dft_signal edt_update -source node edt_update_port
+
+8.4 Run DRC
+check_design_rules
+
+
+Common violation:
+
+DFT_C1 → Clock not declared
+
+8.5 Create DFT Specification
+create_dft_specification
+
+
+Includes:
+
+IJTAG network definition
+
+MBIST partitioning
+
+Controller generation
+
+8.6 SIB Types
+Type	Purpose
+STI	MBIST controllers
+SRI	EDT / OCC
+8.7 Process DFT Specification
+process_dft_specification
+
+
+This will:
+
+✔ Validate spec
+✔ Insert MBIST controllers
+✔ Insert memory interfaces
+✔ Generate IJTAG RTL
+✔ Generate ICL description
+✔ Generate SDC constraints
+✔ Write outputs into TSDB
