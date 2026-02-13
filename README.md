@@ -41,23 +41,23 @@ DFT-Complete-Flow/
 
 ------------------------------------------------------------------------------------------------
 
-```
+
 📁 01_MBIST_Insertion/
 
-#📄 01_wrapper_and_graybox.md
+# 📄 01_wrapper_and_graybox.md
 
-##Wrapper Insertion and Graybox Generation
+# Wrapper Insertion and Graybox Generation
 
-###1️⃣ Why Wrapper Insertion?
+1️⃣ Why Wrapper Insertion?
 
-####ATPG process on very large and complex designs can often be unpredictable
+ATPG process on very large and complex designs can often be unpredictable
 
-####While doing DFT at block level, we will not be checking the interconnects between 2 blocks
+While doing DFT at block level, we will not be checking the interconnects between 2 blocks
 
-####But the interconnects may have defects
+But the interconnects may have defects
 
-####We insert wrapper cells in order to test the interconnection between the blocks
-```
+We insert wrapper cells in order to test the interconnection between the blocks
+
 2️⃣ Wrapper Chains
 
 Wrapper chains are a series of scan cells connected to the boundary of the design
