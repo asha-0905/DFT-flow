@@ -24,10 +24,15 @@ DFT-Complete-Flow/
 ├── README.md
 │
 ├── 01_MBIST_Insertion/
+
 │   ├── 01_wrapper_and_graybox.md
+
 │   ├── 02_mbist_architecture_and_fault_models.md
+
 │   ├── 03_mbist_insertion_flow.md
+
 │   └── 04_ijtag_and_sib_architecture.md
+
 │
 ├── 02_EDT_OCC_Insertion/
 │   ├── 01_edt_architecture.md
