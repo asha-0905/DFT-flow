@@ -152,10 +152,10 @@ Sets parameters for wrapper cell analysis
 
 Option:
 
-##-exclude port port_spec → Excludes specified ports from wrapper analysis
+-exclude port port_spec → Excludes specified ports from wrapper analysis
 
-##set_dedicated_wrapper_cell_options
-##set_dedicated_wrapper_cell_options
+set_dedicated_wrapper_cell_options
+set_dedicated_wrapper_cell_options
 
 
 Specifies how each port is handled during wrapper analysis
