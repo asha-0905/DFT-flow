@@ -270,16 +270,16 @@ write_design -tsdb -graybox -verbose
 
 # Tessent MBIST Basic Flow
 
-1️⃣ Set Context
+## 1️⃣ Set Context
 ```
 set_context dft -rtl -design_id first_insertion
 ```
 
-Creates separate directory in TSDB.
+* Creates separate directory in TSDB.
 ```
 set_tsdb_output_directory ../tsdb_outdir
 ```
-2️⃣ Provide Design & Library Files
+## 2️⃣ Provide Design & Library Files
 ```
 read_cell_library ../../library/adk.tcelllib
 
@@ -287,131 +287,131 @@ read_verilog ../../library/mems/SYNC_1R1W_16x8.v -exclude_from_file_directory -v
 
 read_verilog ../design/corea.v -verbose
 ```
-3️⃣ Elaborate Design
+## 3️⃣ Elaborate Design
 ```
 Set_current_design corea
 
 set_design_level physical_block
 ```
-4️⃣ Define Clocks
+## 4️⃣ Define Clocks
 ```
 add_clocks 0 clka -period 10ns
 
 add_clocks 0 clkb -period 20ns
 ```
-5️⃣ Create DFT Specification Requirements
+## 5️⃣ Create DFT Specification Requirements
 ```
 set_dft_specification_requirements -memory_test on
 ```
-6️⃣ Add DFT Signals
+## 6️⃣ Add DFT Signals
 ```
 add_dft_signal <signal_name>
 ```
-Inserts TDR logic for static signals
+* Inserts TDR logic for static signals
 
-Static signals:
+### Static signals:
 
-Tck_occ_en
+* Tck_occ_en
 
-Ltest_en
+* Ltest_en
 
-Memory_bypass_en
+* Memory_bypass_en
 
-Dynamic signals:
+### Dynamic signals:
 ```
 Add_dft_signal <signal name> -ource node <top_level_port_name>
 ```
-7️⃣ Run DRC
+## 7️⃣ Run DRC
 
-check_design_rules
+* check_design_rules
 ```
 DFT_C1 Violation
 ```
 Clock not declared for memory
 
-8️⃣ Create DFT Specification
+## 8️⃣ Create DFT Specification
 ```
 Create_dft_specification
 ```
 
-Uses:
+* Uses:
 ```
 set_design_level
 ```
 Design netlist
 
-9️⃣ Process DFT Specification
+## 9️⃣ Process DFT Specification
 ```
 process_dft_specification
 ```
-Performs:
+#### Performs:
 
-Validates DFT spec
+* Validates DFT spec
 
-Generates MBIST controllers
+* Generates MBIST controllers
 
-Generates memory interfaces
+* Generates memory interfaces
 
-Generates IJTAG network (RTL + ICL)
+* Generates IJTAG network (RTL + ICL)
 
-Inserts hardware
+* Inserts hardware
 
-Generates SDC constraints
+* Generates SDC constraints
 
-Writes files into TSDB
+* Writes files into TSDB
 
-🔟 Pattern Specification
+## 🔟 Pattern Specification
 ```
 Create_patterns_speification
 
 process_patterns_verification
 ```
-📄 04_ijtag_and_sib_architecture.md
+# 📄 04_ijtag_and_sib_architecture.md
 
-IJTAG and SIB Architecture
+# IJTAG and SIB Architecture
 
-1️⃣ DFT Specification Contents
+## 1️⃣ DFT Specification Contents
 
-IJTAG network configuration
+* IJTAG network configuration
 
-Memory BIST partitioning/configuration
+* Memory BIST partitioning/configuration
 
-Memory BIST Partitioning
+* Memory BIST Partitioning
 
-Listing MBIST controllers
+* Listing MBIST controllers
 
-Clock domain per controller
+* Clock domain per controller
 
-Memories assigned per controller
+* Memories assigned per controller
 
-2️⃣ SIB (Segment Insertion Bit)
+## 2️⃣ SIB (Segment Insertion Bit)
 
-A SIB is a special node in JTAG acting as a switch.
+* A SIB is a special node in JTAG acting as a switch.
 
-Types of SIBs
-STI (Scan Tested Instrument)
+### Types of SIBs
+* STI (Scan Tested Instrument)
 
-Provides IJTAG access for MBIST controller
+** Provides IJTAG access for MBIST controller
 
-SRI (Scan Resource Instrument)
+* SRI (Scan Resource Instrument)
 
-Provides IJTAG access for logic instruments (EDT, OCC)
+** Provides IJTAG access for logic instruments (EDT, OCC)
 
-3️⃣ Instrument Organization
+## 3️⃣ Instrument Organization
 
-Instruments active during scan (EDT/OCC) → under one SIB
+* Instruments active during scan (EDT/OCC) → under one SIB
 
-Instruments scan tested (MBIST controller) → under another SIB
+* Instruments scan tested (MBIST controller) → under another SIB
 
-4️⃣ ICL Extraction
+## 4️⃣ ICL Extraction
 
-Automated generation of IJTAG interconnection info
+* Automated generation of IJTAG interconnection info
 
-ICL files created during process_dft_specification
+* ICL files created during process_dft_specification
 
-Verifies connectivity of ICL modules
+* Verifies connectivity of ICL modules
 
-Must pass with no violations before generating patterns
+* Must pass with no violations before generating patterns
 
 
 
