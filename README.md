@@ -391,11 +391,11 @@ process_patterns_verification
 ### Types of SIBs
 * STI (Scan Tested Instrument)
 
-** Provides IJTAG access for MBIST controller
+      Provides IJTAG access for MBIST controller
 
 * SRI (Scan Resource Instrument)
 
-** Provides IJTAG access for logic instruments (EDT, OCC)
+      Provides IJTAG access for logic instruments (EDT, OCC)
 
 ## 3️⃣ Instrument Organization
 
