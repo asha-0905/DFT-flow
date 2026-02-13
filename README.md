@@ -542,3 +542,572 @@ Compression ratio
 Instrument connectivity
 
 These outputs are used directly for ATPG and simulation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+📌 1️⃣ MBIST INSERTION (Including JTAG, Boundary Scan, Wrapper & Graybox)
+
+This replaces the earlier simplified MBIST section and now includes:
+
+JTAG & Boundary Scan (IEEE 1149.1)
+
+TAP architecture & FSM
+
+Wrapper insertion (Dedicated & Shared)
+
+Graybox generation
+
+MBIST planning & algorithms
+
+IJTAG network architecture
+
+Tessent implementation flow
+
+📌 1️⃣ MBIST INSERTION
+🔷 PART A — JTAG & BOUNDARY SCAN (IEEE 1149.1)
+
+Before MBIST insertion, the first step in a hierarchical DFT flow is JTAG insertion compliant with IEEE 1149.1.
+
+🎯 Why JTAG is Needed?
+
+Modern SoCs contain many internal DFT control signals:
+
+TM
+
+edt_bypass_en
+
+int_mode
+
+ext_mode
+
+int_ltest_en
+
+ext_ltest_en
+
+mbist_bypass_en
+
+and many more...
+
+If all these signals are exposed at the top level:
+
+❌ Top-level port count increases drastically
+❌ Routing complexity increases
+❌ Package cost increases
+
+✅ Solution: Use JTAG
+
+With JTAG, we need only 5 top-level ports:
+
+TDI
+
+TDO
+
+TCK
+
+TMS
+
+TRST (optional)
+
+Using these 5 pins, we can internally control dozens of DFT signals.
+
+🔹 Static vs Dynamic Signals
+Type	Controlled By
+Static signals (constant during test)	JTAG (via TDR)
+Dynamic signals (toggle during test)	Top-level
+Examples
+
+Static (JTAG controlled):
+
+edt_bypass_en
+
+TM
+
+memory_bypass_en
+
+ltest_en
+
+Dynamic (Top-level):
+
+edt_update
+
+SE (Scan Enable)
+
+🔷 JTAG ARCHITECTURE
+
+JTAG consists of:
+
+TAP (Test Access Port)
+
+TAP Controller (16-state FSM)
+
+Instruction Register (IR)
+
+Data Registers (DRs)
+
+Boundary Scan Register
+
+🔹 TAP Signals
+
+Defined by IEEE 1149.1:
+
+Signal	Description
+TDI	Serial test data input
+TDO	Serial test data output
+TCK	Test clock
+TMS	Controls FSM state transitions
+TRST	Optional asynchronous reset
+🔹 Internal Architecture
+
+JTAG includes:
+
+MUX A
+
+Selects between:
+
+Instruction Register (IR)
+
+Data Register (DR)
+
+MUX B
+
+Selects one Data Register based on decoded instruction.
+
+Why Decoder?
+
+To reduce IR width while supporting multiple DRs.
+
+🔷 TAP CONTROLLER (16-State FSM)
+
+The TAP Controller is a 16-state finite state machine.
+
+🔹 Major States
+1️⃣ Test-Logic-Reset
+
+Entered when:
+
+TRST_N = 0
+
+TMS = 1 for 5 TCK cycles
+
+Power-up
+
+In this state:
+
+Test logic disabled
+
+Chip works normally
+
+2️⃣ Run-Test/Idle
+
+Example:
+When performing core logic test, signals like:
+
+int_mode
+
+ext_mode
+
+int_ltest_en
+
+ext_ltest_en
+
+are loaded via TDR.
+
+FSM remains in Run-Test/Idle until operation completes.
+
+3️⃣ IR Path States
+
+Select-IR-Scan
+
+Capture-IR
+→ Loads fixed pattern (LSBs = 01)
+→ Detects SA0/SA1 faults on TDI/TDO
+
+Shift-IR
+→ Serial loading via TDI/TDO
+
+Exit-1 IR
+
+Pause-IR
+
+Exit-2 IR
+
+Update-IR
+→ Parallel load into hold register
+
+🔹 IR Width Explanation
+
+Mandatory Instructions:
+
+EXTEST
+
+SAMPLE/PRELOAD
+
+BYPASS
+
+Minimum IR width = 2 bits
+Can be increased depending on number of DRs.
+
+4️⃣ DR Path States
+
+Select-DR-Scan
+
+Capture-DR
+
+Shift-DR
+
+Exit-1 DR
+
+Pause-DR
+
+Exit-2 DR
+
+Update-DR
+
+🔷 JTAG INSTRUCTIONS
+🔹 Mandatory Instructions
+1️⃣ EXTEST
+
+Tests PCB interconnections
+
+Selects Boundary Scan Register
+
+Used for board-level testing
+
+2️⃣ SAMPLE/PRELOAD
+
+Sample functional data
+
+Preload test data before EXTEST
+
+3️⃣ BYPASS
+
+Skips device in JTAG chain
+
+Uses 1-bit bypass register
+
+🔹 Optional Instruction
+IDCODE
+
+Each chip has unique ID.
+
+During Capture-DR:
+
+IDCODE loaded
+
+Shifted out via TDO
+
+Used to:
+
+Identify chips on PCB
+
+Verify connection order
+
+🔷 BOUNDARY SCAN (BSCAN)
+
+Even if Chip1, Chip2, Chip3 pass ATE testing:
+
+Board may fail due to:
+
+Interconnect defects
+
+Short/Open between chips
+
+Solution → Boundary Scan
+🔹 BSCAN Cell Structure
+
+Modes:
+
+ShiftDR	Mode	Operation
+1	X	Shift data between cells
+0	1	Apply test data to outputs
+0	0	Normal operation
+X	Capture	Capture response
+🔹 BSCAN Chain
+
+All BSCAN cells stitched into separate chain
+
+Controlled via JTAG
+
+Shifted through TDI → TDO
+
+Each chip has its own JTAG controlling its BSCAN cells.
+
+🔷 PART B — WRAPPER INSERTION
+🎯 Why Wrappers?
+
+In hierarchical DFT:
+
+Block-level ATPG does NOT test inter-block interconnects.
+
+Interconnect defects may remain undetected.
+
+Solution → Wrapper Cells
+🔹 Wrapper Chains
+
+Scan chains around block boundary.
+
+Connected to:
+
+All PIs
+
+All POs
+
+🔹 Wrapper Types
+1️⃣ Dedicated Wrappers
+
+New wrapper cell inserted
+
+Area overhead increases
+
+Example command:
+
+set_dedicated_wrapper_cell_options on -ports rst
+
+2️⃣ Shared Wrappers
+
+Reuse existing flop
+
+No area overhead
+
+Tool checks:
+If PI drives flop → reuse flop as wrapper.
+
+🔹 Wrapper Modes
+INTEST
+
+Inputs controllable
+
+Outputs observable
+
+Used for core internal logic testing
+
+EXTEST
+
+Outputs controllable
+
+Inputs observable
+
+Used for interconnect testing
+
+🔹 Wrapper Commands
+set_wrapper_analysis_options
+set_dedicated_wrapper_cell_options
+analyze_wrapper_chains
+
+🔷 PART C — GRAYBOX GENERATION
+🎯 What is Graybox?
+
+A simplified representation of the core.
+
+Contains:
+
+Boundary logic
+
+Wrapper chains
+
+No internal core logic
+
+Used when:
+
+Only boundary logic is needed
+
+Reduces complexity
+
+🔹 Graybox Commands
+get_config_elements
+get_config_value
+import_scan_mode
+set_attribute_value [get_ports *edt_channel*] -name ignore_for_graybox
+analyze_graybox
+write_design -tsdb -graybox -verbose
+
+
+Modes:
+
+int_mode → internal
+
+ext_mode → external
+
+🔷 PART D — MBIST PLANNING
+🔹 Memory Types
+Type	Description
+RAM	Read/Write
+ROM	Read Only
+🔹 Memory Fault Models
+Single Cell Faults
+
+**Stuck-at 0/1
+
+**Transition fault
+
+Double Cell Faults
+
+**Coupling fault
+
+**State coupling
+
+**Inversion coupling
+
+**Idempotent coupling
+
+Address Decoder Faults
+
+**No cell accessed
+
+**Cell never accessed
+
+**Multiple addresses → one cell
+
+One address → multiple cells
+
+🔷 Memory Test Algorithms
+
+Test algorithm consists of:
+
+Read/Write operations
+
+Data pattern (0/1)
+
+Address order (Ascending/Descending)
+
+Example: March algorithms
+
+🔷 PART E — TESSENT MBIST IMPLEMENTATION FLOW
+
+Using Siemens EDA Tessent MBIST
+
+🔹 Step 1 — Set Context
+set_context dft -rtl -design_id first_insertion
+set_tsdb_output_directory ../tsdb_outdir
+
+🔹 Step 2 — Provide Files
+read_cell_library ../../library/adk.tcelllib
+read_verilog ../../library/mems/SYNC_1R1W_16x8.v
+read_verilog ../design/corea.v
+
+🔹 Step 3 — Elaborate
+set_current_design corea
+set_design_level physical_block
+
+🔹 Step 4 — Define Clocks
+add_clocks 0 clka -period 10ns
+add_clocks 0 clkb -period 20ns
+
+
+If missing → DFT_C1 violation.
+
+🔷 DFT SPECIFICATION & IJTAG NETWORK
+🔹 Add DFT Signals
+add_dft_signal <signal_name>
+
+
+Only for static signals.
+
+Dynamic signals:
+
+add_dft_signal <signal_name> -source node <top_port>
+
+🔹 Create DFT Spec
+set_dft_specification_requirements -memory_test on
+create_dft_specification
+
+
+Spec describes:
+
+IJTAG network
+
+MBIST partitioning
+
+Memory grouping
+
+Clock domains
+
+🔹 SIB Types
+SIB Type	Purpose
+STI	MBIST instruments
+SRI	Scan/EDT/OCC instruments
+
+SIB acts as a switch in IJTAG.
+
+🔹 Process DFT Spec
+process_dft_specification
+
+
+Performs:
+
+Validation
+
+Hardware generation
+
+MBIST controller insertion
+
+Memory interface insertion
+
+IJTAG RTL + ICL generation
+
+SDC generation
+
+Writes outputs to TSDB
+
+📤 MBIST FINAL OUTPUTS
+
+✔ MBIST Controllers
+✔ Memory Interfaces
+✔ IJTAG Network (RTL + ICL)
+✔ Wrapper Chains
+✔ Graybox Netlist
+✔ SDC Constraints
+✔ Updated Netlist in TSDB
