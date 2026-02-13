@@ -214,62 +214,61 @@ write_design -tsdb -graybox -verbose
 ## 1️⃣ Plan MBIST Strategy
 ## 2️⃣ Memory Types
 
-|RAM |→ Read, Write|
-|-|
-|ROM |→ Read only|
+* RAM → Read, Write
+* ROM → Read only
 
-3️⃣ Fault Models
-Single-Cell Faults
-Stuck-at Fault
+## 3️⃣ Fault Models
+### * Single-Cell Faults
+#### * Stuck-at Fault
 
-Cell always 0 (SA0)
+* Cell always 0 (SA0)
 
-Cell always 1 (SA1)
+* Cell always 1 (SA1)
 
-Transition Fault
+#### * Transition Fault
 
-Fails 0→1
+* Fails 0→1
 
-Fails 1→0
+* Fails 1→0
 
-Double-Cell Faults
-Coupling Fault
+### * Double-Cell Faults
+#### * Coupling Fault
 
-Victim cell affected by aggressor cell.
+* Victim cell affected by aggressor cell.
 
-State coupling → Aggressor state forces victim to 0/1
+* State coupling → Aggressor state forces victim to 0/1
 
-Inversion coupling → Aggressor transition complements victim
+* Inversion coupling → Aggressor transition complements victim
 
-Idempotent coupling → Aggressor transition forces victim to 0/1
+* Idempotent coupling → Aggressor transition forces victim to 0/1
 
-Address Decoder Faults
+#### * Address Decoder Faults
 
-Possible faulty behaviors:
+###### * Possible faulty behaviors:
 
-Given address → no cell accessed
+* Given address → no cell accessed
 
-Certain cell never accessed
+* Certain cell never accessed
 
-Cell accessed by multiple addresses
+* Cell accessed by multiple addresses
 
-Given address → multiple cells accessed
+* Given address → multiple cells accessed
 
-4️⃣ Memory Test Algorithms
+## 4️⃣ Memory Test Algorithms
 
-Test algorithm = finite sequence of test elements.
+#### Test algorithm = finite sequence of test elements.
 
-Each test element contains:
+###* Each test element contains:
 
-Memory operations (Read/Write)
+* Memory operations (Read/Write)
 
-Data pattern (Zero/One)
+* Data pattern (Zero/One)
 
-Address sequence (Ascending/Descending)
+* Address sequence (Ascending/Descending)
 
-📄 03_mbist_insertion_flow.md
+# 📄 03_mbist_insertion_flow.md
 
-Tessent MBIST Basic Flow
+# Tessent MBIST Basic Flow
 
 1️⃣ Set Context
 ```
