@@ -73,8 +73,11 @@ DFT-Complete-Flow/
 
 
 📁 01_MBIST_Insertion/
+
 📄 01_wrapper_and_graybox.md
+
 Wrapper Insertion and Graybox Generation
+
 1️⃣ Why Wrapper Insertion?
 
 ATPG process on very large and complex designs can often be unpredictable
@@ -125,6 +128,7 @@ To overcome the area overhead increase problem
 Re-using the existing flops as wrapper cells
 
 3️⃣ Wrapper Operating Modes
+
 INTEST Mode
 
 All inputs to submodules are controllable using Input wrapper scan chains
@@ -148,19 +152,20 @@ Input wrapper chains capture data from outside logic
 Tool uses input and output wrapper chains to provide test coverage of hierarchical designs during INTEST and EXTEST modes.
 
 4️⃣ Wrapper Chain Commands
+```
 set_wrapper_analysis_options
 set_wrapper_analysis_options
-
+```
 
 Sets parameters for wrapper cell analysis
 
 Option:
-
+```
 -exclude port port_spec → Excludes specified ports from wrapper analysis
 
 set_dedicated_wrapper_cell_options
 set_dedicated_wrapper_cell_options
-
+```
 
 Specifies how each port is handled during wrapper analysis
 
@@ -171,15 +176,15 @@ During wrapper analysis, tool checks if PI drives set/reset of flop
 If yes → dedicated wrapper inferred
 
 Lab usage:
-
+```
 set_dedicated_wrapper_cell_options on -ports rst
-
+```
 
 Adds dedicated wrapper for PIs driving reset ports
-
+```
 analyze_wrapper_chains
 analyze_wrapper_chains
-
+```
 
 Identifies shared and dedicated wrapper cells for PI and PO
 
@@ -188,22 +193,22 @@ Works with set_dedicated_wrapper_cell_options
 5️⃣ Scan Modes for Wrapped Core
 
 For wrapped core:
-
+```
 add_scan_mode int_mode -edt_instances corea_rtl2_tessent_edt_c1_inst
-
+```
 
 Automatically takes configurations mentioned during EDT OCC run
-
+```
 add_scan_mode ext_mode -chain_length 32
 
 analyze_scan_chains
-
+```
 
 Distributes scan elements into new scan chains
-
+```
 insert_test_logic
 
-
+```
 Inserts test structures and stitches scan chains
 
 6️⃣ Graybox
@@ -215,6 +220,7 @@ Used when only boundary logic is required
 Inserted wrapper chains are included in graybox
 
 Graybox Commands
+```
 get_config_elements Core(corea)/Scan/Mode -part tcd -silent
 
 get_config_value
@@ -223,13 +229,13 @@ Import_scan_mode
 
 set_attribute_value [get_ports*edt_channel*] -name ignore_for_graybox
 
-
+```
 Setting ignore_for_graybox on any pin has no effect on graybox analysis
-
+```
 analyze_graybox
 
 write_design -tsdb -graybox -verbose
-
+```
 
 Mode Parameters:
 
@@ -296,39 +302,46 @@ Data pattern (Zero/One)
 Address sequence (Ascending/Descending)
 
 📄 03_mbist_insertion_flow.md
-Tessent MBIST Basic Flow
-1️⃣ Set Context
-set_context dft -rtl -design_id first_insertion
 
+Tessent MBIST Basic Flow
+
+1️⃣ Set Context
+```
+set_context dft -rtl -design_id first_insertion
+```
 
 Creates separate directory in TSDB.
-
+```
 set_tsdb_output_directory ../tsdb_outdir
-
+```
 2️⃣ Provide Design & Library Files
+```
 read_cell_library ../../library/adk.tcelllib
 
 read_verilog ../../library/mems/SYNC_1R1W_16x8.v -exclude_from_file_directory -verbose
 
 read_verilog ../design/corea.v -verbose
-
+```
 3️⃣ Elaborate Design
+```
 Set_current_design corea
 
 set_design_level physical_block
-
+```
 4️⃣ Define Clocks
+```
 add_clocks 0 clka -period 10ns
 
 add_clocks 0 clkb -period 20ns
-
+```
 5️⃣ Create DFT Specification Requirements
+```
 set_dft_specification_requirements -memory_test on
-
+```
 6️⃣ Add DFT Signals
+```
 add_dft_signal <signal_name>
-
-
+```
 Inserts TDR logic for static signals
 
 Static signals:
@@ -340,30 +353,32 @@ Ltest_en
 Memory_bypass_en
 
 Dynamic signals:
-
+```
 Add_dft_signal <signal name> -ource node <top_level_port_name>
-
+```
 7️⃣ Run DRC
+
 check_design_rules
-
+```
 DFT_C1 Violation
-
+```
 Clock not declared for memory
 
 8️⃣ Create DFT Specification
+```
 Create_dft_specification
-
+```
 
 Uses:
-
+```
 set_design_level
-
+```
 Design netlist
 
 9️⃣ Process DFT Specification
+```
 process_dft_specification
-
-
+```
 Performs:
 
 Validates DFT spec
@@ -381,12 +396,15 @@ Generates SDC constraints
 Writes files into TSDB
 
 🔟 Pattern Specification
+```
 Create_patterns_speification
 
 process_patterns_verification
-
+```
 📄 04_ijtag_and_sib_architecture.md
+
 IJTAG and SIB Architecture
+
 1️⃣ DFT Specification Contents
 
 IJTAG network configuration
