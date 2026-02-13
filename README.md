@@ -1,66 +1,36 @@
 ```
 DFT-Complete-Flow/
-
 │
 ├── README.md
-
 │
 ├── 01_MBIST_Insertion/
-
 │   ├── 01_wrapper_and_graybox.md
-
 │   ├── 02_mbist_architecture_and_fault_models.md
-
 │   ├── 03_mbist_insertion_flow.md
-
 │   └── 04_ijtag_and_sib_architecture.md
-
 │
-
 ├── 02_EDT_OCC_Insertion/
-
 │   ├── 01_edt_architecture.md
-
 │   ├── 02_occ_architecture.md
-
 │   ├── 03_edt_insertion_flow.md
-
 │
-
 ├── 03_Simulation/
-
 │   ├── 01_timing_simulation_basics.md
-
 │   ├── 02_simulation_flow.md
-
 │   ├── 03_mismatch_debug_methodology.md
-
 │
-
 ├── 04_ATPG/
-
 │   ├── 01_fault_models.md
-
 │   ├── 02_fault_classes.md
-
 │   ├── 03_pattern_types.md
-
 │   ├── 04_atpg_flow.md
-
 │   ├── 05_coverage_improvement.md
-
 │
-
 ├── 05_Scan_Insertion/
-
 │   ├── 01_scan_basics.md
-
 │   ├── 02_scan_drc_and_fixes.md
-
 │   ├── 03_chain_balancing_and_merging.md
-
 │
-
 └── scripts/
 ```
 
@@ -74,19 +44,19 @@ DFT-Complete-Flow/
 
 📁 01_MBIST_Insertion/
 
-📄 01_wrapper_and_graybox.md
+#📄 01_wrapper_and_graybox.md
 
-Wrapper Insertion and Graybox Generation
+##Wrapper Insertion and Graybox Generation
 
-1️⃣ Why Wrapper Insertion?
+###1️⃣ Why Wrapper Insertion?
 
-ATPG process on very large and complex designs can often be unpredictable
+####ATPG process on very large and complex designs can often be unpredictable
 
-While doing DFT at block level, we will not be checking the interconnects between 2 blocks
+####While doing DFT at block level, we will not be checking the interconnects between 2 blocks
 
-But the interconnects may have defects
+####But the interconnects may have defects
 
-We insert wrapper cells in order to test the interconnection between the blocks
+####We insert wrapper cells in order to test the interconnection between the blocks
 
 2️⃣ Wrapper Chains
 
