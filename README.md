@@ -384,26 +384,26 @@ process_patterns_verification
 
 * Memories assigned per controller
 
-## 2️⃣ SIB (Segment Insertion Bit)
+### 2️⃣ SIB (Segment Insertion Bit)
 
 * A SIB is a special node in JTAG acting as a switch.
 
-### Types of SIBs
+#### Types of SIBs
 * STI (Scan Tested Instrument)
 
-      Provides IJTAG access for MBIST controller
+--> Provides IJTAG access for MBIST controller
 
 * SRI (Scan Resource Instrument)
 
-      Provides IJTAG access for logic instruments (EDT, OCC)
+--> Provides IJTAG access for logic instruments (EDT, OCC)
 
-## 3️⃣ Instrument Organization
+### 3️⃣ Instrument Organization
 
 * Instruments active during scan (EDT/OCC) → under one SIB
 
 * Instruments scan tested (MBIST controller) → under another SIB
 
-## 4️⃣ ICL Extraction
+### 4️⃣ ICL Extraction
 
 * Automated generation of IJTAG interconnection info
 
@@ -418,168 +418,177 @@ process_patterns_verification
 
 ---------------------------------------------------
 
-📁 02_EDT_OCC_Insertion/
-📄 01_edt_architecture.md
-EDT Architecture (Embedded Deterministic Test)
-1️⃣ Scan Compression Overview
+# 📁 02_EDT_OCC_Insertion/
+## 📄 01_edt_architecture.md
+## EDT Architecture (Embedded Deterministic Test)
+### 1️⃣ Scan Compression Overview
 
-Add compression hardware (EDT – Embedded Deterministic Test)
+* Add compression hardware (EDT – Embedded Deterministic Test)
 
-Reduces number of external scan channels
+* Reduces number of external scan channels
 
-Improves test efficiency
+* Improves test efficiency
 
-2️⃣ Decompressor Architecture
-LFSR (Linear Feedback Shift Register)
+### 2️⃣ Decompressor Architecture
+#### LFSR (Linear Feedback Shift Register)
 
-Given an initial value, the LFSR starts generating patterns
+* Given an initial value, the LFSR starts generating patterns
 
-Disadvantage: Generated patterns have a diagonal relationship
+* Disadvantage: Generated patterns have a diagonal relationship
 
-Phase Shifter
+#### Phase Shifter
 
-Patterns from LFSR are given to Phase Shifter
+* Patterns from LFSR are given to Phase Shifter
 
-Adds randomness to patterns
+* Adds randomness to patterns
 
-Reduces correlation between generated scan data
+* Reduces correlation between generated scan data
 
-External Channels
+##### * External Channels
 
-Even after Phase Shifter, tool may not generate all combinations
+* Even after Phase Shifter, tool may not generate all combinations
 
-Patterns are also provided from external channels
+* Patterns are also provided from external channels
 
-Increases randomness further
+* Increases randomness further
 
-3️⃣ Compressor and Mask Logic
-Compressor
+### 3️⃣ Compressor and Mask Logic
+#### Compressor
 
-Built using levels of XORs
+* Built using levels of XORs
 
-Compresses values of all internal scan chains into a single value
+* Compresses values of all internal scan chains into a single value
 
-If black boxes are encountered → propagates X
+* If black boxes are encountered → propagates X
 
-Mask Logic
+#### Mask Logic
 
-Added to stop propagation of X
+* Added to stop propagation of X
 
-Masks X propagation using decoders
+* Masks X propagation using decoders
 
-Decoders
+#### Decoders
 
-Without decoders → size and area increase.
+* Without decoders → size and area increase.
 
-Types:
+#### Types:
 
-XOR Decoder
+* XOR Decoder
 
-One-hot Decoder
+* One-hot Decoder
 
-4️⃣ Compression Relationship
+### 4️⃣ Compression Relationship
 
-Relationship between external channels and internal scan chains:
+* Relationship between external channels and internal scan chains:
 
-Compression Ratio = Number of internal chains / Number of external channels
+* Compression Ratio = Number of internal chains / Number of external channels
 
-📄 02_occ_architecture.md
-OCC Architecture (On-Chip Controller)
-1️⃣ Purpose of OCC
+## 📄 02_occ_architecture.md
+## OCC Architecture (On-Chip Controller)
+### 1️⃣ Purpose of OCC
 
-Circuit that decides:
+#### Circuit that decides:
 
-Which clock propagates in Functional mode
+* Which clock propagates in Functional mode
 
-Which clock propagates in DFT mode (Shift and Capture)
+* Which clock propagates in DFT mode (Shift and Capture)
 
-Number of clock pulses required during Capture phase
+* Number of clock pulses required during Capture phase
 
-OCC controls clock behavior during:
+#### OCC controls clock behavior during:
 
-Functional mode
+* Functional mode
 
-Shift phase
+* Shift phase
 
-Capture phase
+* Capture phase
 
-📄 03_edt_insertion_flow.md
-EDT/OCC Insertion Flow
-1️⃣ Set Context to DFT
-2️⃣ SETUP Phase
-Read Design Files
+## 📄 03_edt_insertion_flow.md
+## EDT/OCC Insertion Flow
+### 1️⃣ Set Context to EDT
+```
+set context dft -edt
+```
+
+### 2️⃣ SETUP Phase
+* Read Design Files
+```
 read_verilog
-
+```
 
 (Scan inserted netlist)
-
+```
 read_cell_library
-
+```
 
 (Library file)
 
-Elaboration
+* Elaboration
 
-Elaborate the design
+* Elaborate the design
 
-Dofile
+* Dofile
 
-Provide ATPG dofile
+* Provide ATPG dofile
 
-Internally testproc will be called
+* Internally testproc will be called
 
-Specify Number of Channels
+* Specify Number of Channels
+```
 set_edt_options
+```
+### 3️⃣ ANALYSIS Phase
 
-3️⃣ ANALYSIS Phase
-Check DRC Violations
+* Check DRC Violations
+```
 analyze_drc_violations
+```
+#### Common EDT Violations
 
-Common EDT Violations
+* K13 → Information regarding newly inserted pins
 
-K13 → Information regarding newly inserted pins
+* E5 → X-propagation violation
 
-E5 → X-propagation violation
+* Fix EDT-related violations.
 
-Fix EDT-related violations.
-
-4️⃣ INSERTION Phase
+### 4️⃣ INSERTION Phase
+```
 write_edt_files
+```
 
+* Performs insertion
 
-Performs insertion
+* Writes output files
 
-Writes output files
+* Auto-Generated Script
 
-Auto-Generated Script
-
-Complete process script automatically written by tool:
-
+* Complete process script automatically written by tool:
+```
 dc_script.scr
+```
+### 5️⃣ Library Concepts
+#### Link Library
 
-5️⃣ Library Concepts
-Link Library
+* Used to link a design
 
-Used to link a design
+* Resolves instantiated references in RTL or gate-level netlist
 
-Resolves instantiated references in RTL or gate-level netlist
+#### Target Library
 
-Target Library
+* Used during compile command
 
-Used during compile command
+* Creates technology node specific gate-level netlist
 
-Creates technology node specific gate-level netlist
+* DC optimization selects smallest gates meeting timing and functionality
 
-DC optimization selects smallest gates meeting timing and functionality
+### 6️⃣ Outputs
 
-6️⃣ Outputs
-
-Compressed scan netlist:
-
+* Compressed scan netlist:
+```
 edt_top_gate.v
+```
 
-
-EDT/OCC configuration
+* EDT/OCC configuration
 
 
 ---------------------------------------------------------------------------------------
