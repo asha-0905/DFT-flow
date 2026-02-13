@@ -210,13 +210,13 @@ write_design -tsdb -graybox -verbose
 * mode_type: internal, external
 
 # 📄 02_mbist_architecture_and_fault_models.md
-## MBIST Strategy and Fault Models
+# MBIST Strategy and Fault Models
 ## 1️⃣ Plan MBIST Strategy
 ## 2️⃣ Memory Types
 
-RAM → Read, Write
-
-ROM → Read only
+|RAM |→ Read, Write|
+|-|
+|ROM |→ Read only|
 
 3️⃣ Fault Models
 Single-Cell Faults
