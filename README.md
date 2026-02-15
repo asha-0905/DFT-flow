@@ -71,10 +71,6 @@ DFT-Complete-Flow/
 * When the PI of a block directly connects to a flop Or connects to a flop through small combinational logic. The tool will reuse that flop as a wrapper flop (shared wrapper)
 
 * Similarly applicable for PO
-  
-- **EDT Dofile** → `edt_dofile.png`
-- ![EDT_Dofile](https://github.com/asha-0905/DFT-Project---Level2-DFT/blob/main/EDT_Dofile.png)
-  
 
 ### * Dedicated Wrapper Cells
 
