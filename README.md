@@ -258,7 +258,7 @@ write_design -tsdb -graybox -verbose
 
 #### Test algorithm = finite sequence of test elements.
 
-###* Each test element contains:
+#### Each test element contains:
 
 * Memory operations (Read/Write)
 
@@ -1453,221 +1453,221 @@ Invoke Tessent Shell
 
 * Scan cell details
 
-📂 05_Scan_Insertion/02_scan_drc_and_fixes.md
-Scan DRC and Fixes
-DRC (Design Rule Checks)
+### 📂 05_Scan_Insertion/02_scan_drc_and_fixes.md
+#### Scan DRC and Fixes
+#### DRC (Design Rule Checks)
 
-Rules that a flop must pass to convert into scan flop.
+* Rules that a flop must pass to convert into scan flop.
 
-1️⃣ Clock Controllability DRC
+### 1️⃣ Clock Controllability DRC
 
-Issue:
+#### Issue:
 
-Clock definition missing
+* Clock definition missing
 
-Clock connected to another flop
+* Clock connected to another flop
 
-Fix:
-
+#### Fix:
+```
 add_clock <off state> <clock_name>
+```
 
+* Or add mux.
 
-Or add mux.
+### 2️⃣ Set/Reset Controllability DRC
 
-2️⃣ Set/Reset Controllability DRC
+#### Issue:
 
-Issue:
+* Set/Reset connected to flop/combo output
 
-Set/Reset connected to flop/combo output
+* Tied to ground
 
-Tied to ground
+* Missing declaration
 
-Missing declaration
-
-Fix:
-
+#### Fix:
+```
 add_pin_constraints <off state C0/C1> <set/reset name>
-
-
-Or
-
+```
+* Or
+```
 add_clock <off state> <set/reset name>
+```
 
+* Or add mux.
 
-Or add mux.
+### 3️⃣ Bus Contention
 
-3️⃣ Bus Contention
+#### Occurs when:
 
-Occurs when:
+* Two or more drivers force opposite values
 
-Two or more drivers force opposite values
-
-Fix:
-
+#### Fix:
+```
 set_test_logic -tristate on
+```
+### 4️⃣ Feedback Loop DRC
 
-4️⃣ Feedback Loop DRC
+#### Issue:
 
-Issue:
+* Oscillating feedback
 
-Oscillating feedback
+* Tool cannot determine value
 
-Tool cannot determine value
+#### Fix:
 
-Fix:
+* Add mux
 
-Add mux
+### 5️⃣ X-Source DRC
 
-5️⃣ X-Source DRC
+#### Issue:
 
-Issue:
+* Output is X
 
-Output is X
+* Due to analog block or memories
 
-Due to analog block or memories
+#### Fix:
 
-Fix:
+* Bypass logic
 
-Bypass logic
+### 6️⃣ Potential Race DRC
+* Clock Data Race
 
-6️⃣ Potential Race DRC
-Clock Data Race
+* Clock drives both Clock and D port
 
-Clock drives both Clock and D port
+* Set Reset Race
 
-Set Reset Race
+* Same signal drives Set and Reset
 
-Same signal drives Set and Reset
+#### Fix:
 
-Fix:
+* Add mux
 
-Add mux
+### Specific Violation Codes
+#### S1
 
-Specific Violation Codes
-S1
+* Clock or set/reset missing or improperly connected.
 
-Clock or set/reset missing or improperly connected.
-
-Fix:
-
+##### Fix:
+```
 add_clock <off state> <clock_name>
+```
+#### S2
 
-S2
+* Clock tied to fixed value.
 
-Clock tied to fixed value.
+##### Fix:
 
-Fix:
+* Add mux
 
-Add mux
+#### D5
 
-D5
+* S1/S2 violation
 
-S1/S2 violation
+* Scan equivalent not available
 
-Scan equivalent not available
+* Latch present
 
-Latch present
+##### Fix:
 
-Fix:
+* Declare clock
 
-Declare clock
+#### C6
 
-C6
+* Clock pin connected to D input and another flop’s clock.
 
-Clock pin connected to D input and another flop’s clock.
+##### Fix:
 
-Fix:
+* Add mux
 
-Add mux
-
-Or:
-
+* Or:
+```
 set_test_logic -C6 on
+```
+#### C3
 
-C3
+* Positive edge flop connected to negative edge flop.
 
-Positive edge flop connected to negative edge flop.
+##### Fix:
 
-Fix:
+* Add lockup latch
 
-Add lockup latch
+#### C7
 
-C7
+* Flop cannot capture.
 
-Flop cannot capture.
+##### Fix:
 
-Fix:
+* Add mux
 
-Add mux
+#### Manual and Autofix Options
 
-Manual and Autofix Options
-
-Manual netlist editing using:
-
+##### Manual netlist editing using:
+```
 create_connection
 
 delete_connection
 
 create_instance
-
-Autofix commands:
-
+```
+##### Autofix commands:
+```
 set_test_logic -clock on
 set_test_logic -set on
 set_test_logic -reset on
 set_test_logic -tristate on
 set_test_logic -C6 on
+```
+### 📂 05_Scan_Insertion/03_chain_balancing_and_merging.md
+#### Scan Chain Balancing and Merging
+### 1️⃣ Scan Chain Balancing
 
-📂 05_Scan_Insertion/03_chain_balancing_and_merging.md
-Scan Chain Balancing and Merging
-1️⃣ Scan Chain Balancing
+#### Goal:
 
-Goal:
+* Keep almost equal number of flops per chain
 
-Keep almost equal number of flops per chain
+#### Reason:
 
-Reason:
+* Unbalanced chains increase test time
 
-Unbalanced chains increase test time
+#### Fix:
 
-Fix:
+* Add dummy values to shorter chains
 
-Add dummy values to shorter chains
+### 2️⃣ Edge and Clock Domain Mixing
 
-2️⃣ Edge and Clock Domain Mixing
+* Used for balancing.
 
-Used for balancing.
+* Edge Mixing
 
-Edge Mixing
+* Positive and negative edge triggered flops in same chain
 
-Positive and negative edge triggered flops in same chain
+* Clock Domain Mixing
 
-Clock Domain Mixing
+* Flops from different clock domains in same chain
 
-Flops from different clock domains in same chain
-
-Command
+#### Command
+```
 insert_test_logic -number <num_chains> -edge merge -clock merge
+```
+### 3️⃣ Scan Chain Reordering
 
-3️⃣ Scan Chain Reordering
+* Done by PD team
 
-Done by PD team
+* Uses scandef file
 
-Uses scandef file
+#### Final Scan Outputs Summary
 
-Final Scan Outputs Summary
+* After complete scan insertion:
 
-After complete scan insertion:
+* Scan inserted netlist
 
-Scan inserted netlist
+* Scan cell report
 
-Scan cell report
+* Scan chain report
 
-Scan chain report
+* Scan DRC report
 
-Scan DRC report
-
-Scandef file
+* Scandef file
 
 
 ---------------------------------------------------------------------------------------------------
