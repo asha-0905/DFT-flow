@@ -526,11 +526,11 @@ process_patterns_verification
 
 #### Circuit that decides:
 
-* Which clock propagates in Functional mode
+* Which clock propagates has to be propagated (Block A)
 
-* Which clock propagates in DFT mode (Shift and Capture)
+* Clock for OCC Shift Registers (Block C)
 
-* Number of clock pulses required during Capture phase
+* Number of clock pulses required during Capture phase (Block B)
 
 #### OCC controls clock behavior during:
 
