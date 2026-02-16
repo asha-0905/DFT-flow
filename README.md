@@ -716,6 +716,8 @@ PD Netlist → STA → Timing Reports + SDF
 
 - **Parallel_patterns**
 - ![Parallel_patterns](https://github.com/asha-0905/DFT-flow/blob/main/Parallel_patterns.png?raw=true)
+- **Parallel_patterns_waveform**
+- ![Parallel_patterns_waveform](https://github.com/asha-0905/DFT-flow/blob/main/Parallel_patterns_waveform.png?raw=true)
 
 ## 📂 03_Simulation/02_simulation_flow.md
 ## Simulation Flow
