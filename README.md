@@ -7,7 +7,8 @@ DFT-Complete-Flow/
 │   ├── 01_wrapper_and_graybox.md
 │   ├── 02_mbist_architecture_and_fault_models.md
 │   ├── 03_mbist_insertion_flow.md
-│   └── 04_ijtag_and_sib_architecture.md
+│   └── 04_JTAG_and_Boundary_Scan.md
+│   └── 05_ijtag_and_sib_architecture.md
 │
 ├── 02_EDT_OCC_Insertion/
 │   ├── 01_edt_architecture.md
@@ -101,7 +102,7 @@ insert_test_logic
 
 * Re-using the existing flops as wrapper cells
 
-## 3️⃣ Wrapper Operating Modes
+### 3️⃣ Wrapper Operating Modes
 
 #### INTEST Mode
 
@@ -417,11 +418,285 @@ Create_patterns_speification
 
 process_patterns_verification
 ```
-## 📄 04_ijtag_and_sib_architecture.md
 
-### JTAG Architecture
+## 📄 04_JTAG_and_Boundary_Scan.md
 
+### 1️⃣ JTAG Overview
 
+#### JTAG is a serial test access mechanism used for:
+
+* Internal test control
+
+* Boundary scan testing
+
+* Accessing on-chip test logic
+
+* Reducing top-level control pins
+
+* It is standardized by IEEE 1149.1.
+
+### 2️⃣ Need for JTAG
+
+* Modern SoCs contain many test control signals such as:
+```
+TM
+
+edt_bypass_en
+
+int_mode
+
+ext_mode
+
+int_ltest_en
+
+ext_ltest_en
+
+mbist_bypass_en
+
+(many more…)
+```
+* If all these signals are exposed at the top level: Number of I/O ports becomes very large.
+
+* Solution — Use JTAG
+
+* JTAG provides a serial interface to control internal test signals.
+
+* Only 5 pins are required:
+```
+TMS
+
+TCK
+
+TRST (optional)
+
+TDI
+
+TDO
+```
+#### Using JTAG:
+
+* Internal test configuration is controlled serially
+* Top-level pin count is minimized
+
+### 3️⃣ Static vs Dynamic Signal Control
+
+#### JTAG is typically used to control static configuration signals:
+
+* Constant during test execution
+Examples:
+```
+TM
+
+edt_bypass_en
+```
+* Dynamic signals must still come from top level:
+
+* Change during operation
+Examples:
+```
+edt_update
+
+SE (Scan Enable)
+```
+### 4️⃣ JTAG Architecture
+
+#### JTAG consists of:
+
+* Test Access Port (TAP)
+
+* TAP Controller (FSM)
+
+* Instruction Register (IR)
+
+* Data Registers (DRs)
+
+### 5️⃣ Test Access Port (TAP)
+
+* The TAP is the external interface used for JTAG communication.
+
+#### Mandatory Signals
+TDI	--> Serial test data input
+TDO	--> Serial test data output
+TCK	--> Test clock
+TMS	--> Controls TAP FSM transitions
+
+#### Optional Signal
+TRST --> Asynchronous TAP reset
+
+### 6️⃣ Internal Multiplexing
+
+#### JTAG internally uses two multiplexers:
+
+##### MUX A
+
+###### Selects:
+
+* Instruction Register path
+
+* Data Register path
+
+##### MUX B
+
+* Selects which data register is connected to TDO.
+
+* A decoder is used to select the required data register based on the instruction.
+
+#### Purpose of decoder:
+
+* Reduce instruction register width
+* Efficient register selection
+
+### 7️⃣ TAP Controller (FSM)
+
+* The TAP controller is a 16-state finite state machine.
+
+#### Major states
+```
+Test-Logic-Reset
+
+Run-Test / Idle
+
+IR access path
+
+DR access path
+```
+#### Test-Logic-Reset
+
+* Test logic disabled. Normal chip operation continues.
+
+##### FSM enters reset when:
+
+* TRST asserted
+
+* TMS = 1 for ≥ 5 TCK cycles
+
+* Power-up
+
+#### Run-Test / Idle
+
+* Used to execute test operations after configuration.
+
+* Example: Core logic test runs while TAP remains in this state.
+
+### 8️⃣ Instruction Register (IR) Operations
+#### Capture-IR
+
+* Loads fixed pattern (LSB = 01).
+
+* Purpose: Detect stuck-at faults on TDI/TDO.
+
+#### Shift-IR
+
+* Instruction shifted serially through TDI → TDO.
+
+* One bit per TCK.
+
+#### Update-IR
+
+* Shifted instruction latched into hold register.
+
+##### IR Width
+
+--> Must support mandatory instructions:
+
+* EXTEST
+
+* SAMPLE/PRELOAD
+
+* BYPASS
+
+--> Minimum width: 2 bits
+* Can increase depending on number of data registers.
+
+### 9️⃣ Data Register (DR) Operations
+#### Capture-DR
+
+* Selected data register loads parallel data.
+
+#### Shift-DR
+
+* Data shifted serially.
+
+#### Update-DR
+
+* Shifted value latched for operation.
+
+### 🔟 Boundary Scan (Board-Level Testing)
+
+#### Even if individual chips pass manufacturing test, the PCB may fail due to:
+
+* Interconnect defects
+* Shorts
+* Opens
+
+* Boundary scan detects these faults.
+
+### 1️⃣1️⃣ Boundary Scan Cells (BSCAN)
+
+* Boundary scan cells are placed at chip I/O pins.
+
+* They form a separate scan chain controlled via JTAG.
+
+* Each chip contains:
+
+--> JTAG module
+--> Boundary scan chain
+
+### 1️⃣2️⃣ Boundary Scan Cell Operation
+#### ShiftDR = 1
+
+* Shift data through boundary scan chain.
+
+#### Mode = 1 (EXTEST active)
+
+* Apply test data to output pins.
+
+#### ShiftDR = 0
+
+* Capture pin values.
+
+#### Mode = 0
+
+* Normal functional operation (transparent).
+
+### 1️⃣3️⃣ Standard JTAG Instructions
+* Mandatory Instructions
+#### EXTEST
+
+* Tests PCB interconnections.
+
+* Selects boundary scan register
+
+* Drives outputs
+
+* Captures input responses
+
+#### SAMPLE / PRELOAD
+
+* Samples functional I/O
+
+* Preloads test values before EXTEST
+
+#### BYPASS
+
+* Skips device in scan chain.
+
+* Uses single-bit bypass register.
+
+* Optional Instruction
+#### IDCODE
+
+* Reads unique device identification.
+
+##### Used to:
+
+* Identify chips
+* Verify scan chain order
+* Board debugging
+
+During Capture-DR, ID register loads device ID and shifts out.
+
+## 📄 05_ijtag_and_sib_architecture.md
 
 ## IJTAG and SIB Architecture
 
