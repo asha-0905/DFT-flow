@@ -66,16 +66,14 @@ DFT-Complete-Flow/
 
 * Wrapper cells may be of type dedicated cell or shared cell
 
-### * Shared Wrapper Cells
+### Shared Wrapper Cells
 
 * When the PI of a block directly connects to a flop Or connects to a flop through small combinational logic. The tool will reuse that flop as a wrapper flop (shared wrapper)
 
 * Similarly applicable for PO
 
-- **Dedicated_Input_wrapper**
-- ![Dedicated_Input_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Dedicated_Input_wrapper.png?raw=true)
 
-### * Dedicated Wrapper Cells
+### Dedicated Wrapper Cells
 
 * Insert wrapper cells on input ports
 
@@ -86,7 +84,10 @@ DFT-Complete-Flow/
 ```
 insert_test_logic
 ```
-
+- **Dedicated_Input_wrapper**
+- ![Dedicated_Input_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Dedicated_Input_wrapper.png?raw=true)
+- **Dedicated_Output_wrapper**
+- ![Dedicated_Output_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Dedicated_Output_wrapper.png?raw=true)
 
 * This approach will add area overhead
 
