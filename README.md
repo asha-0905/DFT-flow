@@ -1077,6 +1077,9 @@ ATPG generates patterns based on fault models.
 ## 📂 04_ATPG/02_fault_classes.md
 ### Fault Classes
 
+- **Fault_classes**
+- ![Fault_classes](https://github.com/asha-0905/DFT-flow/blob/main/ATPG_Fault_classes.png?raw=true)
+
 #### Tool categorizes faults based on:
 
 * How detected
@@ -1096,19 +1099,31 @@ ATPG generates patterns based on fault models.
 #### Subclasses of UT
 ##### UU – Unused
 
+- **Unused_fault**
+- ![Unused_fault](https://github.com/asha-0905/DFT-flow/blob/main/Unused_fault.png?raw=true)
+
 * Faults on circuitry unconnected to observation point
 
 * Faults on floating primary outputs
 
 ##### TI – Tied
 
+- **Tied_fault**
+- ![Tied_fault](https://github.com/asha-0905/DFT-flow/blob/main/Tied_fault.png?raw=true)
+- 
 * Fault location tied to same value as stuck value
 
 ##### BL – Blocked
 
+- **Blocked_fault**
+- ![Blocked_fault](https://github.com/asha-0905/DFT-flow/blob/main/Blocked_fault.png?raw=true)
+
 * Tied logic blocks path to observation point
 
 ##### RE – Redundant
+
+- **Redundant_fault**
+- ![Redundant_fault](https://github.com/asha-0905/DFT-flow/blob/main/Redundant_fault.png?raw=true)
 
 * Proven undetectable after exhaustive analysis
 
@@ -1143,6 +1158,9 @@ ATPG generates patterns based on fault models.
 
 #### Possible-detected faults:
 
+- **POSDET_fault**
+- ![POSDET_fault](https://github.com/asha-0905/DFT-flow/blob/main/POSDET_fault.png?raw=true)
+
 * Good machine = 0/1
 
 * Faulty machine = X
@@ -1170,6 +1188,9 @@ Binary difference
 ###### AU.WIRE – Wire Contention
 
 ###### AU.SEQ – Sequential Depth
+
+- **Sequential_depth_fault**
+- ![Sequential_depth_fault](https://github.com/asha-0905/DFT-flow/blob/main/Sequential_depth_fault.png?raw=true)
 
 ###### AU.EDT – EDT Blocks
 
