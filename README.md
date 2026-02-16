@@ -239,21 +239,21 @@ write_design -tsdb -graybox -verbose
 * ROM → Read only
 
 ## 3️⃣ Fault Models
-### * Single-Cell Faults
-#### * Stuck-at Fault
+### Single-Cell Faults
+#### Stuck-at Fault
 
 * Cell always 0 (SA0)
 
 * Cell always 1 (SA1)
 
-#### * Transition Fault
+#### Transition Fault
 
 * Fails 0→1
 
 * Fails 1→0
 
-### * Double-Cell Faults
-#### * Coupling Fault
+### Double-Cell Faults
+#### Coupling Fault
 
 * Victim cell affected by aggressor cell.
 
@@ -263,9 +263,9 @@ write_design -tsdb -graybox -verbose
 
 * Idempotent coupling → Aggressor transition forces victim to 0/1
 
-#### * Address Decoder Faults
+#### Address Decoder Faults
 
-###### * Possible faulty behaviors:
+###### Possible faulty behaviors:
 
 * Given address → no cell accessed
 
