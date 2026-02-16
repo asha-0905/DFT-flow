@@ -72,7 +72,11 @@ DFT-Complete-Flow/
 
 * Similarly applicable for PO
 
-
+- **Shared_Input_wrapper**
+- ![Shared_Input_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Shared_Input_wrapper.png?raw=true)
+- **Shared_Output_wrapper**
+- ![Shared_Output_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Shared_Output_wrapper.png?raw=true)
+  
 ### Dedicated Wrapper Cells
 
 * Insert wrapper cells on input ports
@@ -108,7 +112,12 @@ insert_test_logic
 I* nput wrapper chains launch data into inside logic
 
 * Output wrapper chains capture data from inside logic
-
+  
+- **Intest_mode**
+- ![Intest_mode](https://github.com/asha-0905/DFT-flow/blob/main/Intest_mode.png?raw=true)
+- **Intest_mode2**
+- ![Intest_mode2](https://github.com/asha-0905/DFT-flow/blob/main/Intest_mode2.png?raw=true)
+  
 ### EXTEST Mode
 
 * All outputs from submodules are controllable using Output wrapper scan chains
@@ -120,6 +129,11 @@ I* nput wrapper chains launch data into inside logic
 * Input wrapper chains capture data from outside logic
 
 * Tool uses input and output wrapper chains to provide test coverage of hierarchical designs during INTEST and EXTEST modes.
+  
+- **Extest_mode**
+- ![Extest_mode](https://github.com/asha-0905/DFT-flow/blob/main/Extest_mode.png?raw=true)
+- **Extest_mode2**
+- ![Extest_mode2](https://github.com/asha-0905/DFT-flow/blob/main/Extest_mode2.png?raw=true)
 
 ## 4️⃣ Wrapper Chain Commands
 ```
@@ -188,6 +202,9 @@ insert_test_logic
 * Used when only boundary logic is required
 
 * Inserted wrapper chains are included in graybox
+
+- **Graybox**
+- ![Graybox](https://github.com/asha-0905/DFT-flow/blob/main/Graybox.png?raw=true)
 
 * Graybox Commands
 ```
