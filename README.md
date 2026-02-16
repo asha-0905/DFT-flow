@@ -968,12 +968,22 @@ ATPG generates patterns based on fault models.
     Launch on capture
 
     Launch off capture
+  
+- **LOC**
+- ![LOC](https://github.com/asha-0905/DFT-flow/blob/main/LOC.png?raw=true)
+- **LOC2**
+- ![LOC2](https://github.com/asha-0905/DFT-flow/blob/main/LOC2.png?raw=true)
 
 * LOS (Launch On Shift)
 
     Launch on shift
 
     Launch off shift
+  
+- **LOS**
+- ![LOS](https://github.com/asha-0905/DFT-flow/blob/main/LOS.png?raw=true)
+- **LOS2**
+- ![LOS2](https://github.com/asha-0905/DFT-flow/blob/main/LOS2.png?raw=true)
 
 ##### LOC vs LOS
 
@@ -1231,6 +1241,9 @@ Detectable faults / Testable faults
 ### Pattern Types
 ### 1️⃣ Serial Patterns
 
+- **Serial_patterns**
+- ![Serial_patterns](https://github.com/asha-0905/DFT-flow/blob/main/Serial_patterns.png?raw=true)
+
 #### Loaded serially
 
 * Shift cycles = number of flops in chain (without EDT)
@@ -1253,6 +1266,11 @@ Number of flops + masking bits + initialization cycles
 3. Pulse clock
 
 ### 2️⃣ Parallel Patterns
+
+- **Parallel_patterns**
+- ![Parallel_patterns](https://github.com/asha-0905/DFT-flow/blob/main/Parallel_patterns.png?raw=true)
+- **Parallel_patterns_waveform**
+- ![Parallel_patterns_waveform](https://github.com/asha-0905/DFT-flow/blob/main/Parallel_patterns_waveform.png?raw=true)
 
 #### Loaded parallelly
 
