@@ -500,6 +500,9 @@ SE (Scan Enable)
 ```
 ### 4️⃣ JTAG Architecture
 
+- **JTAG**
+- ![JTAG](https://github.com/asha-0905/DFT-flow/blob/main/JTAG.png?raw=true)
+
 #### JTAG consists of:
 
 * Test Access Port (TAP)
@@ -511,6 +514,9 @@ SE (Scan Enable)
 * Data Registers (DRs)
 
 ### 5️⃣ Test Access Port (TAP)
+
+- **TAP_architecture**
+- ![TAP_architecture](https://github.com/asha-0905/DFT-flow/blob/main/TAP_architecture.png?raw=true)
 
 * The TAP is the external interface used for JTAG communication.
 
@@ -547,6 +553,9 @@ SE (Scan Enable)
 * Efficient register selection
 
 ### 7️⃣ TAP Controller (FSM)
+
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/TAP_Controller.png?raw=true)
 
 * The TAP controller is a 16-state finite state machine.
 
@@ -623,6 +632,12 @@ DR access path
 
 ### 🔟 Boundary Scan (Board-Level Testing)
 
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/Boundary_scan.png?raw=true)
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/BSCAN.png?raw=true)
+
+
 #### Even if individual chips pass manufacturing test, the PCB may fail due to:
 
 * Interconnect defects
@@ -632,6 +647,9 @@ DR access path
 * Boundary scan detects these faults.
 
 ### 1️⃣1️⃣ Boundary Scan Cells (BSCAN)
+
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/BSCAN_cell.png?raw=true)
 
 * Boundary scan cells are placed at chip I/O pins.
 
@@ -663,6 +681,12 @@ DR access path
 * Mandatory Instructions
 #### EXTEST
 
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/Extest_Instruction.png?raw=true)
+
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/Extest_Instruction2.png?raw=true)
+
 * Tests PCB interconnections.
 
 * Selects boundary scan register
@@ -673,11 +697,20 @@ DR access path
 
 #### SAMPLE / PRELOAD
 
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/SampleOrPreload_Instruction.png?raw=true)
+
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/SampleOrPreload_Instruction2.png?raw=true)
+
 * Samples functional I/O
 
 * Preloads test values before EXTEST
 
 #### BYPASS
+
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/Bypass_Instruction.png?raw=true)
 
 * Skips device in scan chain.
 
