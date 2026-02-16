@@ -44,11 +44,11 @@ DFT-Complete-Flow/
 
 # 📁 01_MBIST_Insertion/
 
-# 📄 01_wrapper_and_graybox.md
+## 📄 01_wrapper_and_graybox.md
 
-# Wrapper Insertion and Graybox Generation
+## Wrapper Insertion and Graybox Generation
 
-## 1️⃣ Why Wrapper Insertion?
+### 1️⃣ Why Wrapper Insertion?
 
 * ATPG process on very large and complex designs can often be unpredictable
 
@@ -58,7 +58,7 @@ DFT-Complete-Flow/
 
 * We insert wrapper cells in order to test the interconnection between the blocks
 
-## 2️⃣ Wrapper Chains
+### 2️⃣ Wrapper Chains
 
 * Wrapper chains are a series of scan cells connected to the boundary of the design
 
@@ -66,7 +66,7 @@ DFT-Complete-Flow/
 
 * Wrapper cells may be of type dedicated cell or shared cell
 
-### Shared Wrapper Cells
+#### Shared Wrapper Cells
 
 * When the PI of a block directly connects to a flop Or connects to a flop through small combinational logic. The tool will reuse that flop as a wrapper flop (shared wrapper)
 
@@ -77,7 +77,7 @@ DFT-Complete-Flow/
 - **Shared_Output_wrapper**
 - ![Shared_Output_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Shared_Output_wrapper.png?raw=true)
   
-### Dedicated Wrapper Cells
+#### Dedicated Wrapper Cells
 
 * Insert wrapper cells on input ports
 
@@ -95,7 +95,7 @@ insert_test_logic
 
 * This approach will add area overhead
 
-#### * Why Shared Wrappers?
+##### * Why Shared Wrappers?
 
 * To overcome the area overhead increase problem
 
@@ -103,7 +103,7 @@ insert_test_logic
 
 ## 3️⃣ Wrapper Operating Modes
 
-### INTEST Mode
+#### INTEST Mode
 
 * All inputs to submodules are controllable using Input wrapper scan chains
 
@@ -118,7 +118,7 @@ I* nput wrapper chains launch data into inside logic
 - **Intest_mode2**
 - ![Intest_mode2](https://github.com/asha-0905/DFT-flow/blob/main/Intest_mode2.png?raw=true)
   
-### EXTEST Mode
+#### EXTEST Mode
 
 * All outputs from submodules are controllable using Output wrapper scan chains
 
@@ -135,7 +135,7 @@ I* nput wrapper chains launch data into inside logic
 - **Extest_mode2**
 - ![Extest_mode2](https://github.com/asha-0905/DFT-flow/blob/main/Extest_mode2.png?raw=true)
 
-## 4️⃣ Wrapper Chain Commands
+### 4️⃣ Wrapper Chain Commands
 ```
 set_wrapper_analysis_options
 set_wrapper_analysis_options
@@ -174,7 +174,7 @@ analyze_wrapper_chains
 
 * Works with set_dedicated_wrapper_cell_options
 
-## 5️⃣ Scan Modes for Wrapped Core
+### 5️⃣ Scan Modes for Wrapped Core
 
 * For wrapped core:
 ```
@@ -195,7 +195,7 @@ insert_test_logic
 ```
 * Inserts test structures and stitches scan chains
 
-## 6️⃣ Graybox
+### 6️⃣ Graybox
 
 * Graybox is simplified representation of core module describing periphery logic
 
@@ -224,17 +224,17 @@ analyze_graybox
 write_design -tsdb -graybox -verbose
 ```
 
-#### * Mode Parameters:
+##### Mode Parameters:
 
 * mode_name: int_mode, ext_mode
 
 * mode_type: internal, external
 
-# 📄 02_mbist_architecture_and_fault_models.md
-# MBIST Strategy and Fault Models
-## 1️⃣ Plan MBIST Strategy
+## 📄 02_mbist_architecture_and_fault_models.md
+## MBIST Strategy and Fault Models
+### 1️⃣ Plan MBIST Strategy
 
-### Tessent MBIST Implementation
+#### Tessent MBIST Implementation
 
 - **Tessent_MBIST_implementation**
 - ![Tessent_MBIST_implementation](https://github.com/asha-0905/DFT-flow/blob/main/Tessent_MBIST_implementation.png?raw=true)
@@ -245,7 +245,7 @@ write_design -tsdb -graybox -verbose
 * The controllers are controlled by BAP (Bist Access Port)
 * The TAP (IEEE 1149.1 std) controls the BAP through SIB. When SIB is opened, it passes data to the BAP which then generates the test commands to the MBIST controller
 
-### MBIST Architecture
+#### MBIST Architecture
 - **MBIST_Architecture**
 - ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/MBIST_Architecture.png?raw=true)
 
@@ -255,7 +255,7 @@ write_design -tsdb -graybox -verbose
 * BIST_ON = 1 --> BIST mode (selects the test input)
 * When memory is in BIST mode, it starts the BIST algorithm
 
-### Tessent MBIST Operation Protocol
+#### Tessent MBIST Operation Protocol
 - **Tessent_MBIST_OperatingProtocol**
 - ![Tessent_MBIST_OperatingProtocol](https://github.com/asha-0905/DFT-flow/blob/main/Tessent_MBIST_OperatingProtocol.png?raw=true)
 
@@ -263,27 +263,27 @@ write_design -tsdb -graybox -verbose
 * If ann error is found during test, the GO signal goes low during the remaining test
 * When the test is completed, the DONE signal goes high
 
-## 2️⃣ Memory Types
+### 2️⃣ Memory Types
 
 * RAM → Read, Write
 * ROM → Read only
 
-## 3️⃣ Fault Models
-### Single-Cell Faults
-#### Stuck-at Fault
+### 3️⃣ Fault Models
+#### Single-Cell Faults
+##### Stuck-at Fault
 
 * Cell always 0 (SA0)
 
 * Cell always 1 (SA1)
 
-#### Transition Fault
+##### Transition Fault
 
 * Fails 0→1
 
 * Fails 1→0
 
-### Double-Cell Faults
-#### Coupling Fault
+#### Double-Cell Faults
+##### Coupling Fault
 
 * Victim cell affected by aggressor cell.
 
@@ -293,7 +293,7 @@ write_design -tsdb -graybox -verbose
 
 * Idempotent coupling → Aggressor transition forces victim to 0/1
 
-#### Address Decoder Faults
+##### Address Decoder Faults
 
 ###### Possible faulty behaviors:
 
@@ -305,11 +305,11 @@ write_design -tsdb -graybox -verbose
 
 * Given address → multiple cells accessed
 
-## 4️⃣ Memory Test Algorithms
+### 4️⃣ Memory Test Algorithms
 
-#### Test algorithm = finite sequence of test elements.
+##### Test algorithm = finite sequence of test elements.
 
-#### Each test element contains:
+##### Each test element contains:
 
 * Memory operations (Read/Write)
 
@@ -317,11 +317,11 @@ write_design -tsdb -graybox -verbose
 
 * Address sequence (Ascending/Descending)
 
-# 📄 03_mbist_insertion_flow.md
+## 📄 03_mbist_insertion_flow.md
 
-# Tessent MBIST Basic Flow
+## Tessent MBIST Basic Flow
 
-## 1️⃣ Set Context
+### 1️⃣ Set Context
 ```
 set_context dft -rtl -design_id first_insertion
 ```
@@ -330,7 +330,7 @@ set_context dft -rtl -design_id first_insertion
 ```
 set_tsdb_output_directory ../tsdb_outdir
 ```
-## 2️⃣ Provide Design & Library Files
+### 2️⃣ Provide Design & Library Files
 ```
 read_cell_library ../../library/adk.tcelllib
 
@@ -338,29 +338,29 @@ read_verilog ../../library/mems/SYNC_1R1W_16x8.v -exclude_from_file_directory -v
 
 read_verilog ../design/corea.v -verbose
 ```
-## 3️⃣ Elaborate Design
+### 3️⃣ Elaborate Design
 ```
 Set_current_design corea
 
 set_design_level physical_block
 ```
-## 4️⃣ Define Clocks
+### 4️⃣ Define Clocks
 ```
 add_clocks 0 clka -period 10ns
 
 add_clocks 0 clkb -period 20ns
 ```
-## 5️⃣ Create DFT Specification Requirements
+### 5️⃣ Create DFT Specification Requirements
 ```
 set_dft_specification_requirements -memory_test on
 ```
-## 6️⃣ Add DFT Signals
+### 6️⃣ Add DFT Signals
 ```
 add_dft_signal <signal_name>
 ```
 * Inserts TDR logic for static signals
 
-### Static signals:
+#### Static signals:
 
 * Tck_occ_en
 
@@ -368,11 +368,11 @@ add_dft_signal <signal_name>
 
 * Memory_bypass_en
 
-### Dynamic signals:
+#### Dynamic signals:
 ```
 Add_dft_signal <signal name> -ource node <top_level_port_name>
 ```
-## 7️⃣ Run DRC
+### 7️⃣ Run DRC
 
 * check_design_rules
 ```
@@ -380,7 +380,7 @@ DFT_C1 Violation
 ```
 Clock not declared for memory
 
-## 8️⃣ Create DFT Specification
+### 8️⃣ Create DFT Specification
 ```
 Create_dft_specification
 ```
@@ -391,7 +391,7 @@ set_design_level
 ```
 Design netlist
 
-## 9️⃣ Process DFT Specification
+### 9️⃣ Process DFT Specification
 ```
 process_dft_specification
 ```
@@ -411,7 +411,7 @@ process_dft_specification
 
 * Writes files into TSDB
 
-## 🔟 Pattern Specification
+### 🔟 Pattern Specification
 ```
 Create_patterns_speification
 
