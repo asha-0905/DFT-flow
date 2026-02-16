@@ -640,6 +640,11 @@ edt_top_gate.v
 
 * To ensure patterns work correctly before sending them to tester
 
+### Flow of Simulation
+
+- **Simulation_flow**
+- ![Simulation](https://github.com/asha-0905/DFT-flow/blob/main/Simulation_flow.png?raw=true)
+
 ### 2️⃣ Need for Timing Simulation
 
 #### During ATPG:
@@ -701,10 +706,16 @@ PD Netlist → STA → Timing Reports + SDF
 #### Serial Simulation
 
 * Patterns loaded serially into scan chain
+  
+- **Serial_patterns**
+- ![Serial_patterns](https://github.com/asha-0905/DFT-flow/blob/main/Serial_patterns.png?raw=true)
 
 #### Parallel Simulation
 
 * Patterns loaded parallelly into scan chain
+
+- **Parallel_patterns**
+- ![Parallel_patterns](https://github.com/asha-0905/DFT-flow/blob/main/Parallel_patterns.png?raw=true)
 
 ## 📂 03_Simulation/02_simulation_flow.md
 ## Simulation Flow
