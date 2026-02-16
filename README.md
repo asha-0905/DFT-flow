@@ -397,17 +397,14 @@ process_patterns_verification
 
 * Memory BIST partitioning/configuration
 
-* Memory BIST Partitioning
-
-* Listing MBIST controllers
-
 * Clock domain per controller
-
-* Memories assigned per controller
 
 ### 2️⃣ SIB (Segment Insertion Bit)
 
 * A SIB is a special node in JTAG acting as a switch.
+
+- **SIB**
+- ![SIB](https://github.com/asha-0905/DFT-flow/blob/main/SIB.png?raw=true)
 
 #### Types of SIBs
 * STI (Scan Tested Instrument)
@@ -434,14 +431,15 @@ process_patterns_verification
 
 * Must pass with no violations before generating patterns
 
-
-
-
 ---------------------------------------------------
 
 # 📁 02_EDT_OCC_Insertion/
 ## 📄 01_edt_architecture.md
 ## EDT Architecture (Embedded Deterministic Test)
+
+- **EDT_Architecture**
+- ![EDT_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/EDT_Architecture.png?raw=true)
+
 ### 1️⃣ Scan Compression Overview
 
 * Add compression hardware (EDT – Embedded Deterministic Test)
