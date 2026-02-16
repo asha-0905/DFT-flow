@@ -72,7 +72,7 @@ DFT-Complete-Flow/
 
 * Similarly applicable for PO
 
-**Dedicated_Input_wrapper**
+- **Dedicated_Input_wrapper**
 ![Dedicated_Input_wrapper](https://github.com/asha-0905/DFT-flow/blob/main/Dedicated_Input_wrapper.png?raw=true)
 
 ### * Dedicated Wrapper Cells
