@@ -1402,6 +1402,7 @@ analyze_fault <pin hierarchy> -stuck 0/1 -D
 
 ## 📂 05_Scan_Insertion/01_scan_basics.md
 ### Scan Insertion Basics
+
 ### 1️⃣ Invoking Scan Insertion Flow
 * Source Mentor Environment
 ```
@@ -1463,6 +1464,10 @@ Invoke Tessent Shell
 * Generate reports and output files
 
 ### 8️⃣ Scan Structure Details
+
+- **Scen_cell**
+- ![Scan_cell](https://github.com/asha-0905/DFT-flow/blob/main/Scan_cell.png?raw=true)
+
 * Flops with Scan Cells
 
 * Normal flop → Scan flop
@@ -1478,6 +1483,9 @@ Invoke Tessent Shell
 #### Mux output → Flop D input
 
 #### Build Scan Chains
+
+- **Scan_chain**
+- ![Scan_chain](https://github.com/asha-0905/DFT-flow/blob/main/Scan_chain.png?raw=true)
 
 * All scan flops stitched together
 
@@ -1552,6 +1560,9 @@ Invoke Tessent Shell
 
 #### Issue:
 
+- **Clock_Controllability_DRC**
+- ![Clock_Controllability_DRC](https://github.com/asha-0905/DFT-flow/blob/main/Clock_Controllability_DRC.png?raw=true)
+
 * Clock definition missing
 
 * Clock connected to another flop
@@ -1561,11 +1572,17 @@ Invoke Tessent Shell
 add_clock <off state> <clock_name>
 ```
 
+- **Clock_Controllability_DRC_fix**
+- ![Clock_Controllability_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/Clock_Controllability_DRC_fix.png?raw=true)
+
 * Or add mux.
 
 ### 2️⃣ Set/Reset Controllability DRC
 
 #### Issue:
+
+- **SetReset_Controllability_DRC**
+- ![SetReset_Controllability_DRC](https://github.com/asha-0905/DFT-flow/blob/main/SetReset_Controllability_DRC.png?raw=true)
 
 * Set/Reset connected to flop/combo output
 
@@ -1582,11 +1599,17 @@ add_pin_constraints <off state C0/C1> <set/reset name>
 add_clock <off state> <set/reset name>
 ```
 
+- **SetReset_Controllability_DRC_fix**
+- ![SetReset_Controllability_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/SetReset_Controllability_DRC_fix.png?raw=true)
+
 * Or add mux.
 
 ### 3️⃣ Bus Contention
 
 #### Occurs when:
+
+- **BusContention_DRC**
+- ![BusContention_DRC](https://github.com/asha-0905/DFT-flow/blob/main/BusContention_DRC.png?raw=true)
 
 * Two or more drivers force opposite values
 
@@ -1594,9 +1617,15 @@ add_clock <off state> <set/reset name>
 ```
 set_test_logic -tristate on
 ```
+- **BusContention_DRC_fix**
+- ![BusContention_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/BusContention_DRC_fix.png?raw=true)
+
 ### 4️⃣ Feedback Loop DRC
 
 #### Issue:
+
+- **Feedback_loop_DRC**
+- ![Feedback_loop_DRC](https://github.com/asha-0905/DFT-flow/blob/main/Feedback_loop_DRC.png?raw=true)
 
 * Oscillating feedback
 
@@ -1604,11 +1633,17 @@ set_test_logic -tristate on
 
 #### Fix:
 
+- **Feedback_loop_DRC_fix**
+- ![Feedback_loop_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/Feedback_loop_DRC_fix.png?raw=true)
+
 * Add mux
 
 ### 5️⃣ X-Source DRC
 
 #### Issue:
+
+- **XSource_DRC**
+- ![XSource_DRC](https://github.com/asha-0905/DFT-flow/blob/main/XSource_DRC.png?raw=true)
 
 * Output is X
 
@@ -1616,18 +1651,37 @@ set_test_logic -tristate on
 
 #### Fix:
 
+- **XSource_DRC_fix**
+- ![XSource_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/XSource_DRC_fix.png?raw=true)
+
 * Bypass logic
 
 ### 6️⃣ Potential Race DRC
-* Clock Data Race
+#### Clock Data Race
+
+- **ClockData_Race_DRC**
+- ![ClockData_Race_DRC](https://github.com/asha-0905/DFT-flow/blob/main/ClockData_Race_DRC.png?raw=true)
 
 * Clock drives both Clock and D port
+  
+#### Fix:
 
-* Set Reset Race
+- **ClockData_Race_DRC_fix**
+- ![ClockData_Race_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/ClockData_Race_DRC_fix.png?raw=true)
+
+* Add a mux
+
+#### Set Reset Race
+
+- **SetReset_Race_DRC**
+- ![SetReset_Race_DRC](https://github.com/asha-0905/DFT-flow/blob/main/SetReset_Race_DRC.png?raw=true)
 
 * Same signal drives Set and Reset
 
 #### Fix:
+
+- **SetReset_Race_DRC_fix**
+- ![SetReset_Race_DRC_fix](https://github.com/asha-0905/DFT-flow/blob/main/SetReset_Race_DRC_fix.png?raw=true)
 
 * Add mux
 
