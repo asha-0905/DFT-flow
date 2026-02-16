@@ -515,13 +515,13 @@ SE (Scan Enable)
 * The TAP is the external interface used for JTAG communication.
 
 #### Mandatory Signals
-TDI	--> Serial test data input
-TDO	--> Serial test data output
-TCK	--> Test clock
-TMS	--> Controls TAP FSM transitions
+* TDI	--> Serial test data input
+* TDO	--> Serial test data output
+* TCK	--> Test clock
+* TMS	--> Controls TAP FSM transitions
 
 #### Optional Signal
-TRST --> Asynchronous TAP reset
+* TRST --> Asynchronous TAP reset
 
 ### 6️⃣ Internal Multiplexing
 
