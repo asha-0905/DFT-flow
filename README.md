@@ -509,7 +509,7 @@ process_patterns_verification
 ### EDT Waveform
 - **EDT_waveform**
 - ![EDT_waveform](https://github.com/asha-0905/DFT-flow/blob/main/EDT_waveform.png?raw=true)
-- 
+
 ### 4️⃣ Compression Relationship
 
 * Relationship between external channels and internal scan chains:
@@ -518,6 +518,10 @@ process_patterns_verification
 
 ## 📄 02_occ_architecture.md
 ## OCC Architecture (On-Chip Controller)
+
+- **OCC**
+- ![OCC](https://github.com/asha-0905/DFT-flow/blob/main/OCC.png?raw=true)
+
 ### 1️⃣ Purpose of OCC
 
 #### Circuit that decides:
