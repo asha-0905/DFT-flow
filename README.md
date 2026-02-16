@@ -419,6 +419,10 @@ process_patterns_verification
 ```
 ## 📄 04_ijtag_and_sib_architecture.md
 
+### JTAG Architecture
+
+
+
 ## IJTAG and SIB Architecture
 
 ### IEEE 1687 std IJTAG Internal JTAG
