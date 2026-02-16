@@ -449,6 +449,10 @@ process_patterns_verification
 * Improves test efficiency
 
 ### 2️⃣ Decompressor Architecture
+
+- **Decompressor**
+- ![Decompressor](https://github.com/asha-0905/DFT-flow/blob/main/Decompressor_logic.png?raw=true)
+
 #### LFSR (Linear Feedback Shift Register)
 
 * Given an initial value, the LFSR starts generating patterns
@@ -473,6 +477,8 @@ process_patterns_verification
 
 ### 3️⃣ Compressor and Mask Logic
 #### Compressor
+- **Compressor**
+- ![Compressor](https://github.com/asha-0905/DFT-flow/blob/main/Compressor_logic.png?raw=true)
 
 * Built using levels of XORs
 
@@ -481,6 +487,10 @@ process_patterns_verification
 * If black boxes are encountered → propagates X
 
 #### Mask Logic
+- **Compressor_without_Xmasking**
+- ![Compressor_without_Xmasking](https://github.com/asha-0905/DFT-flow/blob/main/Compressor_without_Xmasking.png?raw=true)
+- **Compressor_with_Xmasking**
+- ![Compressor_with_Xmasking](https://github.com/asha-0905/DFT-flow/blob/main/Compressor_with_Xmasking.png?raw=true)
 
 * Added to stop propagation of X
 
@@ -495,7 +505,11 @@ process_patterns_verification
 * XOR Decoder
 
 * One-hot Decoder
-
+  
+### EDT Waveform
+- **EDT_waveform**
+- ![EDT_waveform](https://github.com/asha-0905/DFT-flow/blob/main/EDT_waveform.png?raw=true)
+- 
 ### 4️⃣ Compression Relationship
 
 * Relationship between external channels and internal scan chains:
