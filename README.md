@@ -233,6 +233,36 @@ write_design -tsdb -graybox -verbose
 # 📄 02_mbist_architecture_and_fault_models.md
 # MBIST Strategy and Fault Models
 ## 1️⃣ Plan MBIST Strategy
+
+### Tessent MBIST Implementation
+
+- **Tessent_MBIST_implementation**
+- ![Tessent_MBIST_implementation](https://github.com/asha-0905/DFT-flow/blob/main/Tessent_MBIST_implementation.png?raw=true)
+
+* In this figure, memory blocks are instantiated in 2 different cores within the chip
+* Each memory should have a memory interface that would facilitate communication with it
+* These interfaces are driven by Tessent MBIST controllers
+* The controllers are controlled by BAP (Bist Access Port)
+* The TAP (IEEE 1149.1 std) controls the BAP through SIB. When SIB is opened, it passes data to the BAP which then generates the test commands to the MBIST controller
+
+### MBIST Architecture
+- **MBIST_Architecture**
+- ![MBIST_Architecture](https://github.com/asha-0905/DFT-flow/blob/main/MBIST_Architecture.png?raw=true)
+
+* Memory Interface is acting as a wrapper that would select either to apply a functional input or a test input based on BIST_ON or BIST_EN signal
+* BIST_ON signal is controlled by FSM which is inside MBIST controllers
+* BIST_ON = 0 --> functional mode (selects functional input
+* BIST_ON = 1 --> BIST mode (selects the test input)
+* When memory is in BIST mode, it starts the BIST algorithm
+
+### Tessent MBIST Operation Protocol
+- **Tessent_MBIST_OperatingProtocol**
+- ![Tessent_MBIST_OperatingProtocol](https://github.com/asha-0905/DFT-flow/blob/main/Tessent_MBIST_OperatingProtocol.png?raw=true)
+
+* Memory test is intiated when MBISTPG_EN signal is high and 2 bits of BIST_SETUP is 10
+* If ann error is found during test, the GO signal goes low during the remaining test
+* When the test is completed, the DONE signal goes high
+
 ## 2️⃣ Memory Types
 
 * RAM → Read, Write
@@ -387,11 +417,23 @@ Create_patterns_speification
 
 process_patterns_verification
 ```
-# 📄 04_ijtag_and_sib_architecture.md
+## 📄 04_ijtag_and_sib_architecture.md
 
-# IJTAG and SIB Architecture
+## IJTAG and SIB Architecture
 
-## 1️⃣ DFT Specification Contents
+### IEEE 1687 std IJTAG Internal JTAG
+
+- **JTAG_and_IJTAG**
+- ![JTAG_and_IJTAG](https://github.com/asha-0905/DFT-flow/blob/main/JTAG_and_IJTAG.png?raw=true)
+
+* FSM is in Capture DR state, Capture En = 1
+* FSM is in Shift DR state, Shift En = 1
+* FSM is in Update DR state, Update En = 1
+* Whenever Global Reset is pulsed, it reset the DRs and IRs
+* When SIB is programmed with 1, it means SIB is open. If SIB is opened, it provides access to the TDR (allows the necessary data to be written onto the TDR)
+* when SIB is programmed with 0, it means SIB is closed. If SIB is closed, it does not provide access to the TDR
+  
+### 1️⃣ DFT Specification Contents
 
 * IJTAG network configuration
 
