@@ -96,7 +96,7 @@ insert_test_logic
 
 * This approach will add area overhead
 
-##### * Why Shared Wrappers?
+##### Why Shared Wrappers?
 
 * To overcome the area overhead increase problem
 
@@ -110,7 +110,7 @@ insert_test_logic
 
 * All outputs are observable through Output wrapper scan chains
 
-I* nput wrapper chains launch data into inside logic
+* Input wrapper chains launch data into inside logic
 
 * Output wrapper chains capture data from inside logic
   
@@ -308,7 +308,7 @@ write_design -tsdb -graybox -verbose
 
 ### 4️⃣ Memory Test Algorithms
 
-##### Test algorithm = finite sequence of test elements.
+#### Test algorithm = finite sequence of test elements.
 
 ##### Each test element contains:
 
@@ -1532,8 +1532,8 @@ ATPG generates patterns based on fault models.
 * Hard-detected:
 
 Binary difference
-#### Untestable
-##### ATPG_Untestable (AU)
+
+#### ATPG_Untestable (AU)
 
 * Testable faults not detected due to tool constraints.
 
@@ -1568,9 +1568,12 @@ Binary difference
 ```
 set_pattern_type -sequential
 ```
+
 #### Undetected (UD)
+
 ##### UC – Uncontrolled
 ##### UO – Unobserved
+
 ##### UD.AAB – ATPG Abort
 
 * Increase abort limit:
@@ -1578,8 +1581,10 @@ set_pattern_type -sequential
 set_abort_limit
 ```
 ##### UD.UNS – Unsuccess
+
 ##### UD.EAB – EDT Abort
-####Fault Coverage
+
+#### Fault Coverage
 
 * Fault Coverage =
 Detected faults / Total faults
